@@ -1,5 +1,6 @@
 package ktb3.full.week04.dto.response;
 
+import ktb3.full.week04.exception.ApiErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
