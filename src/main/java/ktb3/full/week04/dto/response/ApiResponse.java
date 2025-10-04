@@ -8,14 +8,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
-    private final String message;
+    private final String message = "요청이 성공했습니다.";
     private final T data;
 
-    public static <T> ApiResponse<T> of(String message, T data) {
-        return new ApiResponse<>(message, data);
+    private ApiResponse() {
+        this.data = null;
     }
 
-    public static <T> ApiResponse<T> of(String message) {
-        return new ApiResponse<>(message, null);
+    private static final ApiResponse<Void> BASE_RESPONSE = new ApiResponse<>();
+
+    public static <T> ApiResponse<T> of(T data) {
+        return new ApiResponse<>(data);
+    }
+
+    public static ApiResponse<Void> getBaseResponse() {
+        return BASE_RESPONSE;
     }
 }
