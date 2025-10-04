@@ -19,25 +19,25 @@ public class ApiErrorResponse {
     private final LocalDateTime timestamp;
     private final String path;
 
-    private ApiErrorResponse(ApiErrorCode apiErrorCode, String message, String detail, List<FieldError> fieldErrors, String path) {
+    private ApiErrorResponse(ApiErrorCode apiErrorCode, String detail, List<FieldError> fieldErrors, String path) {
         this.code = apiErrorCode.getCode();
-        this.message = message;
+        this.message = apiErrorCode.getMessage();
         this.detail = detail;
         this.fieldErrors = fieldErrors;
         this.timestamp = LocalDateTime.now();
         this.path = path;
     }
 
-    public static ApiErrorResponse of(ApiErrorCode apiErrorCode, String message, String path) {
-        return new ApiErrorResponse(apiErrorCode, message, null, null, path);
+    public static ApiErrorResponse of(ApiErrorCode apiErrorCode, String path) {
+        return new ApiErrorResponse(apiErrorCode, null, null, path);
     }
 
-    public static ApiErrorResponse ofDetail(ApiErrorCode apiErrorCode, String message, String detail, String path) {
-        return new ApiErrorResponse(apiErrorCode, message, detail, null, path);
+    public static ApiErrorResponse ofDetail(ApiErrorCode apiErrorCode, String detail, String path) {
+        return new ApiErrorResponse(apiErrorCode, detail, null, path);
     }
 
-    public static ApiErrorResponse ofFieldError(ApiErrorCode apiErrorCode, String message, BindingResult bindingResult, String path) {
-        return new ApiErrorResponse(apiErrorCode, message, null, FieldError.ofList(bindingResult), path);
+    public static ApiErrorResponse ofFieldError(ApiErrorCode apiErrorCode, BindingResult bindingResult, String path) {
+        return new ApiErrorResponse(apiErrorCode, null, FieldError.ofList(bindingResult), path);
     }
 
     @Getter
