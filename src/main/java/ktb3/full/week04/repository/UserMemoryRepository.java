@@ -11,9 +11,15 @@ public class UserMemoryRepository implements UserRepository {
 
     private final Map<Long, User> users = new HashMap<>();
     private final Map<String, Long> emails = new HashMap<>();
+    private final Map<String, Long> nicknames = new HashMap<>();
 
     @Override
     public boolean existsByEmail(String email) {
         return emails.containsKey(email);
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        return nicknames.containsKey(nickname);
     }
 }

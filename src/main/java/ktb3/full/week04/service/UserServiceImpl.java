@@ -14,5 +14,10 @@ public class UserServiceImpl implements UserService {
     public boolean validateEmail(String email) {
         return !userRepository.existsByEmail(email);
     }
+
+    @Override
+    public boolean validateNickname(String nickname) {
+        return !userRepository.existsByNickname(nickname);
+    }
 }
 
