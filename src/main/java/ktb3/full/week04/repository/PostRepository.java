@@ -1,8 +1,8 @@
 package ktb3.full.week04.repository;
 
 import ktb3.full.week04.domain.Post;
-import ktb3.full.week04.domain.page.Page;
-import ktb3.full.week04.domain.page.Pageable;
+import ktb3.full.week04.dto.page.Page;
+import ktb3.full.week04.dto.page.Pageable;
 
 import java.util.Optional;
 
@@ -16,5 +16,5 @@ public interface PostRepository {
 
     void update(Post post);
 
-    void delete(Post post);
+    void delete(Long postId);
 }
