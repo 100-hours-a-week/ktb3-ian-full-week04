@@ -4,5 +4,5 @@ public interface PostLikeRepository {
 
     boolean check(Long userId, Long postId);
 
-    void update(Long userId, Long postId);
+    void saveOrUpdate(Long userId, Long postId);
 }
