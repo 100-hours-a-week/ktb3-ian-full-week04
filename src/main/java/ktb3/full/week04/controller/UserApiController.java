@@ -1,7 +1,9 @@
 package ktb3.full.week04.controller;
 
+import jakarta.validation.Valid;
 import ktb3.full.week04.annotation.constraint.ValidEmail;
 import ktb3.full.week04.annotation.constraint.ValidNickname;
+import ktb3.full.week04.dto.request.UserSignUpRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +32,13 @@ public class UserApiController {
 
         return ResponseEntity.ok()
                 .body(ApiResponse.of(result));
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody @Valid UserSignUpRequest userSignUpRequest) {
+        userService.signUp(userSignUpRequest);
+
+        return ResponseEntity.ok()
+                .body(ApiResponse.getBaseResponse());
     }
 }
