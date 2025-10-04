@@ -1,6 +1,7 @@
 package ktb3.full.week04.exception.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import ktb3.full.week04.exception.ApiErrorCode;
 import ktb3.full.week04.dto.response.ApiErrorResponse;
 import ktb3.full.week04.exception.base.CustomException;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
         return ResponseEntity.badRequest()
                 .body(ApiErrorResponse.ofDetail(ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER, e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
+        return ResponseEntity.badRequest()
+                .body(ApiErrorResponse.ofDetail(ApiErrorCode.CONSTRAINT_VIOLATION, e.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

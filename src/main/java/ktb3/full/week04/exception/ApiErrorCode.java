@@ -12,6 +12,7 @@ public enum ApiErrorCode {
     HTTP_MESSAGE_NOT_READABLE("4002", "요청 본문의 형식이 올바르지 않습니다."),
     MISSING_SERVLET_REQUEST_PARAMETER("4003", "필수 요청 파라미터가 누락되었습니다."),
     METHOD_ARGUMENT_TYPE_MISMATCH("4004", "요청 파라미터의 타입이 올바르지 않습니다."),
+    CONSTRAINT_VIOLATION("4005", "요청 파라미터의 값이 올바르지 않습니다."),
 
     // 401 Unauthorized
     INVALID_CREDENTIALS("4011", "아이디 또는 비밀번호가 틀렸습니다."),
