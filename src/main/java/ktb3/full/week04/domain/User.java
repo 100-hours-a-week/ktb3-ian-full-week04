@@ -27,4 +27,8 @@ public class User extends Auditing {
                 .isDeleted(false)
                 .build();
     }
+
+    public void save(Long userId) {
+        this.userId = userId;
+    }
 }
