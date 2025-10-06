@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ktb3.full.week04.global.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
+import static ktb3.full.week04.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
 @RequiredArgsConstructor
 @RequestMapping("/users")
