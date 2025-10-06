@@ -31,4 +31,24 @@ public class User extends Auditing {
     public void save(Long userId) {
         this.userId = userId;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+        this.auditUpdate();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+        this.auditUpdate();
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+        this.auditUpdate();
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+        this.auditDelete();
+    }
 }

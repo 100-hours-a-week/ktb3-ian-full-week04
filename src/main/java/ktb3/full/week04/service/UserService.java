@@ -2,22 +2,26 @@ package ktb3.full.week04.service;
 
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserLoginRequest;
+import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
+import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 
 public interface UserService {
 
-    boolean validateEmailDuplication(String email);
+    boolean validateEmailAvailable(String email);
 
-    boolean validateNicknameDuplication(String nickname);
+    boolean validateNicknameAvailable(String nickname);
 
     void register(UserRegisterRequest request);
 
-    void login(UserLoginRequest request);
+    LoggedInUser login(UserLoginRequest request);
 
     UserAccountResponse getUserAccount(Long userId);
 
     void updateAccount(Long userId, UserAccountUpdateRequest request);
+
+    void updatePassword(Long userId, UserPasswordUpdateRequest request);
 
     void deleteAccount(Long userId);
 }
