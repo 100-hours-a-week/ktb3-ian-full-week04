@@ -1,6 +1,6 @@
-package ktb3.full.week04.exception;
+package ktb3.full.week04.common.exception;
 
-import ktb3.full.week04.exception.base.NotFoundException;
+import ktb3.full.week04.common.exception.base.NotFoundException;
 
 public class UserNotFoundException extends NotFoundException {
 

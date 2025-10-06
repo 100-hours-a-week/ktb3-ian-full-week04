@@ -1,9 +1,9 @@
 package ktb3.full.week04.presentation.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import ktb3.full.week04.exception.ApiErrorCode;
+import ktb3.full.week04.common.exception.ApiErrorCode;
 import ktb3.full.week04.dto.response.ApiErrorResponse;
-import ktb3.full.week04.exception.base.CustomException;
+import ktb3.full.week04.common.exception.base.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

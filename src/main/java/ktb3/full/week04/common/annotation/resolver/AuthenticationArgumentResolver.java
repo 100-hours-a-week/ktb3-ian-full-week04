@@ -1,4 +1,4 @@
-package ktb3.full.week04.annotation.resolver;
+package ktb3.full.week04.common.annotation.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

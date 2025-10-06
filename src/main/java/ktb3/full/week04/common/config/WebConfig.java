@@ -1,7 +1,7 @@
-package ktb3.full.week04.config;
+package ktb3.full.week04.common.config;
 
-import ktb3.full.week04.annotation.resolver.AuthenticationArgumentResolver;
-import ktb3.full.week04.interceptor.LoginValidateInterceptor;
+import ktb3.full.week04.common.annotation.resolver.AuthenticationArgumentResolver;
+import ktb3.full.week04.presentation.interceptor.LoginValidateInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -1,7 +1,7 @@
 package ktb3.full.week04.presentation.controller;
 
 import jakarta.servlet.http.HttpSession;
-import ktb3.full.week04.global.annotation.resolver.Authentication;
+import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
