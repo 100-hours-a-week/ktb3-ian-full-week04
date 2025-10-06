@@ -1,4 +1,4 @@
-package ktb3.full.week04.exception.handler;
+package ktb3.full.week04.presentation.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import ktb3.full.week04.exception.ApiErrorCode;
