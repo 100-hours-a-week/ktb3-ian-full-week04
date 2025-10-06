@@ -1,6 +1,7 @@
 package ktb3.full.week04.presentation.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import ktb3.full.week04.common.exception.ApiErrorCode;
 import ktb3.full.week04.dto.response.ApiErrorResponse;
 import ktb3.full.week04.common.exception.base.CustomException;
@@ -51,9 +52,15 @@ public class GlobalExceptionHandler {
                 .body(ApiErrorResponse.ofDetail(ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH, e.getMessage(), request.getRequestURI()));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
+        return ResponseEntity.badRequest()
+                .body(ApiErrorResponse.ofDetail(ApiErrorCode.CONSTRAINT_VIOLATION, e.getMessage(), request.getRequestURI()));
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(HttpServletRequest request, NoResourceFoundException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiErrorResponse.of(ApiErrorCode.NO_RESOURCE_FOUND, request.getRequestURI()));
     }
 
