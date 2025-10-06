@@ -1,6 +1,7 @@
 package ktb3.full.week04.presentation.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
@@ -29,7 +30,7 @@ public class AuthenticatedUserApiController {
     @PatchMapping
     public ResponseEntity<ApiResponse<Void>> updateUserAccount(
             @Authentication LoggedInUser loggedInUser,
-            @RequestBody UserAccountUpdateRequest userAccountUpdateRequest) {
+            @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest) {
         userService.updateAccount(loggedInUser.getUserId(), userAccountUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiResponse.getBaseResponse());
@@ -38,7 +39,7 @@ public class AuthenticatedUserApiController {
     @PatchMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @Authentication LoggedInUser loggedInUser,
-            @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
+            @Valid @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
         userService.updatePassword(loggedInUser.getUserId(), userPasswordUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiResponse.getBaseResponse());
