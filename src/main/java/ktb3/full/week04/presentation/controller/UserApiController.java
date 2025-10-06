@@ -1,4 +1,4 @@
-package ktb3.full.week04.controller;
+package ktb3.full.week04.presentation.controller;
 
 import jakarta.servlet.http.HttpSession;
 import ktb3.full.week04.dto.request.UserLoginRequest;
@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ktb3.full.week04.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
+import static ktb3.full.week04.global.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
 @RequiredArgsConstructor
 @RequestMapping("/users")

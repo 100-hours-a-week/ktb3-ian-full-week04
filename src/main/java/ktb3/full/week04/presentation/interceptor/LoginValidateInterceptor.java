@@ -1,4 +1,4 @@
-package ktb3.full.week04.interceptor;
+package ktb3.full.week04.presentation.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import ktb3.full.week04.exception.LoginRequiredException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import static ktb3.full.week04.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
+import static ktb3.full.week04.global.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
 public class LoginValidateInterceptor implements HandlerInterceptor {
 
