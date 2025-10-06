@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UserAccountUpdateRequest {
+public class UserPasswordUpdateRequest {
 
-    private final String nickname;
     private final String password;
-    private final String profileImage;
 }
