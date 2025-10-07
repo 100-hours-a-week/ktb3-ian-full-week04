@@ -20,14 +20,19 @@ public class CommentMemoryRepository implements CommentRepository {
     private final AtomicLong commentIdCounter = new AtomicLong(1L);
 
     private final Map<Long, Comment> idToComment = new ConcurrentHashMap<>();
-    private final List<IdAndCreatedDate> latestComments = new ArrayList<>();
+    private final Map<Long, List<IdAndCreatedDate>> postIdToLatestComments = new ConcurrentHashMap<>();
 
     @Override
     public void save(Comment comment) {
         long commentId = commentIdCounter.getAndIncrement();
         comment.save(commentId);
         idToComment.put(commentId, comment);
-        latestComments.add(new IdAndCreatedDate(commentId, comment.getCreatedAt()));
+
+        long postId = comment.getPost().getPostId();
+        if (!postIdToLatestComments.containsKey(postId)) {
+            postIdToLatestComments.put(postId, new ArrayList<>());
+        }
+        postIdToLatestComments.get(postId).add(new IdAndCreatedDate(commentId, comment.getCreatedAt()));
     }
 
     @Override
@@ -50,11 +55,11 @@ public class CommentMemoryRepository implements CommentRepository {
     public void delete(Comment comment) {
         // soft delete
         idToComment.put(comment.getCommentId(), comment);
-        latestComments.remove(new IdAndCreatedDate(comment.getCommentId(), comment.getCreatedAt()));
+        postIdToLatestComments.remove(comment.getPost().getPostId()).remove(new IdAndCreatedDate(comment.getCommentId(), comment.getCreatedAt()));
     }
 
     @Override
-    public PageResponse<Comment> findAll(PageRequest pageRequest) {
-        return this.findAllByLatest(idToComment, latestComments, pageRequest);
+    public PageResponse<Comment> findAll(long postId, PageRequest pageRequest) {
+        return this.findAllByLatest(idToComment, postIdToLatestComments.get(postId), pageRequest);
     }
 }
