@@ -10,11 +10,11 @@ import ktb3.full.week04.service.base.Findable;
 
 public interface CommentService extends Findable<Comment, Long> {
 
-    PageResponse<CommentResponse> getAllComments(Long postId, PageRequest pageRequest);
+    PageResponse<CommentResponse> getAllComments(long postId, PageRequest pageRequest);
 
-    void createComment(Long postId, CommentCreateRequest request);
+    void createComment(long userId, long postId, CommentCreateRequest request);
 
-    void updateComment(Long userId, Long commentId, CommentUpdateRequest request);
+    void updateComment(long userId, long commentId, CommentUpdateRequest request);
 
-    void deleteComment(Long userId, Long commentId);
+    void deleteComment(long userId, long commentId);
 }
