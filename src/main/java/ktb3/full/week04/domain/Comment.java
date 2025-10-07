@@ -15,7 +15,6 @@ public class Comment extends Auditing {
     private final User user;
     private final Post post;
     private String content;
-    private boolean isDeleted;
 
     public static Comment create(User user, Post post, String content) {
         return Comment.builder()
@@ -23,7 +22,6 @@ public class Comment extends Auditing {
                 .user(user)
                 .post(post)
                 .content(content)
-                .isDeleted(false)
                 .build();
     }
 
