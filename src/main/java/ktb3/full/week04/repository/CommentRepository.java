@@ -1,16 +1,9 @@
 package ktb3.full.week04.repository;
 
 import ktb3.full.week04.domain.Comment;
-import ktb3.full.week04.dto.page.Page;
-import ktb3.full.week04.dto.page.Pageable;
+import ktb3.full.week04.repository.base.CrudRepository;
+import ktb3.full.week04.repository.base.PagingAndSortingRepository;
 
-public interface CommentRepository {
+public interface CommentRepository extends CrudRepository<Comment, Long>, PagingAndSortingRepository<Comment> {
 
-    Page<Comment> findAll(Long postId, Pageable pageable);
-
-    void save(Comment comment);
-
-    void update(Comment comment);
-
-    void delete(Long commentId);
 }

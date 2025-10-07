@@ -1,20 +1,8 @@
 package ktb3.full.week04.repository;
 
 import ktb3.full.week04.domain.Post;
-import ktb3.full.week04.dto.page.Page;
-import ktb3.full.week04.dto.page.Pageable;
+import ktb3.full.week04.repository.base.CrudRepository;
+import ktb3.full.week04.repository.base.PagingAndSortingRepository;
 
-import java.util.Optional;
-
-public interface PostRepository {
-
-    Page<Post> findAll(Pageable pageable);
-
-    Optional<Post> findById(Long postId);
-
-    void save(Post post);
-
-    void update(Post post);
-
-    void delete(Long postId);
+public interface PostRepository extends CrudRepository<Post, Long>, PagingAndSortingRepository<Post> {
 }

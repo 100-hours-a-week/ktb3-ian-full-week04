@@ -1,21 +1,15 @@
 package ktb3.full.week04.repository;
 
 import ktb3.full.week04.domain.User;
+import ktb3.full.week04.repository.base.CrudRepository;
+
 import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
     boolean existsByNickname(String nickname);
 
-    void save(User user);
-
-    Optional<User> findById(Long userId);
-
     Optional<User> findByEmail(String email);
-
-    void update(User user);
-
-    void delete(User user);
 }
