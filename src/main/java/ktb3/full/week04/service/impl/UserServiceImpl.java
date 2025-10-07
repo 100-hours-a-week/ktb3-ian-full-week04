@@ -54,13 +54,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAccountResponse getUserAccount(Long userId) {
-        User user = getUserOrThrow(userId);
+        User user = getOrThrow(userId);
         return UserAccountResponse.from(user);
     }
 
     @Override
     public void updateAccount(Long userId, UserAccountUpdateRequest request) {
-        User user = getUserOrThrow(userId);
+        User user = getOrThrow(userId);
         user.updateProfileImage(request.getProfileImage());
 
         if (request.getNickname() != null) {
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(Long userId, UserPasswordUpdateRequest request) {
-        User user = getUserOrThrow(userId);
+        User user = getOrThrow(userId);
         user.updatePassword(request.getPassword());
 
         userRepository.update(user);
@@ -82,13 +82,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAccount(Long userId) {
         // soft delete
-        User user = getUserOrThrow(userId);
+        User user = getOrThrow(userId);
         user.delete();
 
         userRepository.update(user);
     }
 
-    public User getUserOrThrow(Long userId) {
+    @Override
+    public User getOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
     }
