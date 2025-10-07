@@ -26,4 +26,6 @@ public interface UserService extends Findable<User, Long> {
     void updatePassword(Long userId, UserPasswordUpdateRequest request);
 
     void deleteAccount(Long userId);
+
+    void validatePermission(long requestUserId, long actualUserId);
 }
