@@ -33,4 +33,8 @@ public class Post extends Auditing {
                 .isDeleted(false)
                 .build();
     }
+
+    public void save(Long postId) {
+        this.postId = postId;
+    }
 }
