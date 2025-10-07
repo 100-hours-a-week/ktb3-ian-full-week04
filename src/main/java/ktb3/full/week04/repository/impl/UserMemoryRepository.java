@@ -39,6 +39,11 @@ public class UserMemoryRepository implements UserRepository {
     }
 
     @Override
+    public void saveAll(Iterable<User> users) {
+        users.forEach(this::save);
+    }
+
+    @Override
     public Optional<User> findById(Long userId) {
         User user = idToUser.get(userId);
         return validateUser(user);
