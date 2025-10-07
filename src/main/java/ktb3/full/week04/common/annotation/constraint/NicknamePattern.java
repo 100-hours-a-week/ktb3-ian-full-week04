@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 
 import java.lang.annotation.*;
 
+import static ktb3.full.week04.common.Constants.MESSAGE_NICKNAME_PATTERN;
+
 @Pattern(regexp = "^[가-힣a-zA-Z0-9]{1,10}$")
 @ReportAsSingleViolation
 @Documented
@@ -15,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NicknamePattern {
 
-    String message() default "올바른 닉네임 형식을 입력해주세요. (한글, 영어, 숫자만 포함하고 공백 없이 1~10자 사이여야 합니다.)";
+    String message() default MESSAGE_NICKNAME_PATTERN;
 
     Class<?>[] groups() default {};
 

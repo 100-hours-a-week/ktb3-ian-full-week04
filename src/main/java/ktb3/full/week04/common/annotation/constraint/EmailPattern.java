@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 
 import java.lang.annotation.*;
 
+import static ktb3.full.week04.common.Constants.MESSAGE_EMAIL_PATTERN;
+
 @Pattern(regexp = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
 @ReportAsSingleViolation
 @Documented
@@ -15,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EmailPattern {
 
-    String message() default "올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)";
+    String message() default MESSAGE_EMAIL_PATTERN;
 
     Class<?>[] groups() default {};
 
