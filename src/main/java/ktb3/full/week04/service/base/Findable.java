@@ -1,4 +1,4 @@
-package ktb3.full.week04.service;
+package ktb3.full.week04.service.base;
 
 import ktb3.full.week04.common.exception.base.NotFoundException;
 

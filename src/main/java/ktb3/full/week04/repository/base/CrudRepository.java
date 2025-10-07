@@ -1,4 +1,4 @@
-package ktb3.full.week04.repository;
+package ktb3.full.week04.repository.base;
 
 import java.util.Optional;
 
