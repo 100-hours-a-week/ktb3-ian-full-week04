@@ -21,4 +21,14 @@ public class PostLike {
                 .liked(false)
                 .build();
     }
+
+    public void toggle() {
+        this.liked = !this.liked;
+
+        if (this.liked) {
+            post.increaseLikeCount();
+        } else {
+            post.decreaseLikeCount();
+        }
+    }
 }

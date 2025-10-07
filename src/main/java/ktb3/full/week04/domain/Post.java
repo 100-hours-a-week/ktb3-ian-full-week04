@@ -37,4 +37,40 @@ public class Post extends Auditing {
     public void save(Long postId) {
         this.postId = postId;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+        this.auditUpdate();
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+        this.auditUpdate();
+    }
+
+    public void updateImage(String image) {
+        this.image = image;
+        this.auditUpdate();
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+        this.auditDelete();
+    }
 }
