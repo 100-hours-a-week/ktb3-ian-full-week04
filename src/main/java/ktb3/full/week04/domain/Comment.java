@@ -28,4 +28,13 @@ public class Comment extends Auditing {
     public void save(long commentId) {
         this.commentId = commentId;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+        this.auditUpdate();
+    }
+
+    public void delete() {
+        this.auditDelete();
+    }
 }
