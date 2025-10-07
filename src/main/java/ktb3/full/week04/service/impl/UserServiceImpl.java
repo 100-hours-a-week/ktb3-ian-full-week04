@@ -58,11 +58,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateAccount(Long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
-        user.updateProfileImage(request.getProfileImage());
 
         if (request.getNickname() != null) {
             validateNicknameDuplication(request.getNickname());
             user.updateNickname(request.getNickname());
+        }
+
+        if (request.getProfileImage() != null) {
+            user.updateProfileImage(request.getProfileImage());
         }
 
         userRepository.update(user);
