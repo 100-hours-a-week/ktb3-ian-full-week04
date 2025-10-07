@@ -1,15 +1,12 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.Post;
+import ktb3.full.week04.dto.page.IdAndCreatedDate;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.PostRepository;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,23 +20,11 @@ public class PostMemoryRepository implements PostRepository {
     private final AtomicLong postIdCounter = new AtomicLong(1L);
 
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
-    private final List<PostIdAndCreatedDate> latestPosts = new ArrayList<>();
+    private final List<IdAndCreatedDate> latestPosts = new ArrayList<>();
 
     @Override
     public PageResponse<Post> findAll(PageRequest pageRequest) {
-        int pageNumber = pageRequest.getPage();
-        int pageSize = pageRequest.getSize();
-        int offset =  (pageNumber - 1) * pageSize;
-        int start = latestPosts.size() - offset - 1;
-        int end = Math.max(start - pageSize + 1, 0);
-
-        List<Post> content = new ArrayList<>();
-        for (int i = start; i >= end; i--) {
-            PostIdAndCreatedDate pair = latestPosts.get(i);
-            content.add(idToPost.get(pair.postId));
-        }
-
-        return PageResponse.of(content, pageNumber, pageSize, end > 0);
+        return this.findAllByLatest(idToPost, latestPosts, pageRequest);
     }
 
     @Override
@@ -53,7 +38,7 @@ public class PostMemoryRepository implements PostRepository {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
         idToPost.put(postId, post);
-        latestPosts.add(new PostIdAndCreatedDate(postId, post.getCreatedAt()));
+        latestPosts.add(new IdAndCreatedDate(postId, post.getCreatedAt()));
     }
 
     @Override
@@ -70,13 +55,6 @@ public class PostMemoryRepository implements PostRepository {
     public void delete(Post post) {
         // soft delete
         idToPost.put(post.getPostId(), post);
-        latestPosts.remove(new PostIdAndCreatedDate(post.getPostId(), post.getCreatedAt()));
-    }
-
-    @EqualsAndHashCode
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class PostIdAndCreatedDate {
-        private final long postId;
-        private final LocalDateTime createdDate;
+        latestPosts.remove(new IdAndCreatedDate(post.getPostId(), post.getCreatedAt()));
     }
 }
