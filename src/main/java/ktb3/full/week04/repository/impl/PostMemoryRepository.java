@@ -45,7 +45,7 @@ public class PostMemoryRepository implements PostRepository {
     @Override
     public Optional<Post> findById(Long postId) {
         Post post = idToPost.get(postId);
-        return validatePost(post);
+        return Post.validateExists(post);
     }
 
     @Override
@@ -71,14 +71,6 @@ public class PostMemoryRepository implements PostRepository {
         // soft delete
         idToPost.put(post.getPostId(), post);
         latestPosts.remove(new PostIdAndCreatedDate(post.getPostId(), post.getCreatedAt()));
-    }
-
-    private static Optional<Post> validatePost(Post post) {
-        if (post == null || post.isDeleted()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(post);
     }
 
     @EqualsAndHashCode
