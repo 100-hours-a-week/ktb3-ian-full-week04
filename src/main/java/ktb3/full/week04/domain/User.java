@@ -16,7 +16,6 @@ public class User extends Auditing {
     private String password;
     private String nickname;
     private String profileImage;
-    private boolean isDeleted;
 
     public static User create(String email, String password, String nickname, String profileImage) {
         return User.builder()
@@ -25,7 +24,6 @@ public class User extends Auditing {
                 .password(password)
                 .nickname(nickname)
                 .profileImage(profileImage)
-                .isDeleted(false)
                 .build();
     }
 
@@ -49,7 +47,6 @@ public class User extends Auditing {
     }
 
     public void delete() {
-        this.isDeleted = true;
         this.auditDelete();
     }
 }
