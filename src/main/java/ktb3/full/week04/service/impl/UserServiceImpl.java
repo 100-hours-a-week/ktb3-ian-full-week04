@@ -1,5 +1,6 @@
 package ktb3.full.week04.service.impl;
 
+import ktb3.full.week04.common.exception.*;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserLoginRequest;
@@ -7,10 +8,6 @@ import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
-import ktb3.full.week04.common.exception.DuplicatedEmailException;
-import ktb3.full.week04.common.exception.DuplicatedNicknameException;
-import ktb3.full.week04.common.exception.InvalidCredentialsException;
-import ktb3.full.week04.common.exception.UserNotFoundException;
 import ktb3.full.week04.repository.UserRepository;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +83,13 @@ public class UserServiceImpl implements UserService {
         user.delete();
 
         userRepository.update(user);
+    }
+
+    @Override
+    public void validatePermission(long requestUserId, long actualUserId) {
+        if (requestUserId != actualUserId) {
+            throw new NoPermissionException();
+        }
     }
 
     @Override
