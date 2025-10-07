@@ -10,8 +10,6 @@ import java.util.Map;
 
 public interface PagingAndSortingRepository<T> {
 
-    PageResponse<T> findAll(PageRequest pageRequest);
-
     default PageResponse<T> findAllByLatest(Map<Long, T> idToEntity, List<IdAndCreatedDate> latestEntities, PageRequest pageRequest) {
         int pageNumber = pageRequest.getPage();
         int pageSize = pageRequest.getSize();
