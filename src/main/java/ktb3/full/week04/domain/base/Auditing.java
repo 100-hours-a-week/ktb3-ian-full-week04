@@ -1,11 +1,11 @@
-package ktb3.full.week04.domain;
+package ktb3.full.week04.domain.base;
 
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class Auditing {
+public abstract class Auditing {
 
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;

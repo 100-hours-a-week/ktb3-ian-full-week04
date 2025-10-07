@@ -1,5 +1,6 @@
 package ktb3.full.week04.domain;
 
+import ktb3.full.week04.domain.base.Auditing;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

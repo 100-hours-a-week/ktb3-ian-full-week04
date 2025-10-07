@@ -1,5 +1,6 @@
 package ktb3.full.week04.domain;
 
+import ktb3.full.week04.domain.base.Auditing;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,9 @@ public class Comment extends Auditing {
                 .content(content)
                 .isDeleted(false)
                 .build();
+    }
+
+    public void save(long commentId) {
+        this.commentId = commentId;
     }
 }
