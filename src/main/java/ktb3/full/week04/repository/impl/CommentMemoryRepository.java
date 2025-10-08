@@ -1,7 +1,6 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.Comment;
-import ktb3.full.week04.dto.page.IdAndCreatedDate;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.CommentRepository;
@@ -20,7 +19,7 @@ public class CommentMemoryRepository implements CommentRepository {
     private final AtomicLong commentIdCounter = new AtomicLong(1L);
 
     private final Map<Long, Comment> idToComment = new ConcurrentHashMap<>();
-    private final Map<Long, List<IdAndCreatedDate>> postIdToLatestComments = new ConcurrentHashMap<>();
+    private final Map<Long, List<Long>> postIdToLatestComments = new ConcurrentHashMap<>();
 
     @Override
     public void save(Comment comment) {
@@ -32,7 +31,7 @@ public class CommentMemoryRepository implements CommentRepository {
         if (!postIdToLatestComments.containsKey(postId)) {
             postIdToLatestComments.put(postId, new ArrayList<>());
         }
-        postIdToLatestComments.get(postId).add(new IdAndCreatedDate(commentId, comment.getCreatedAt()));
+        postIdToLatestComments.get(postId).add(commentId);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CommentMemoryRepository implements CommentRepository {
     public void delete(Comment comment) {
         // soft delete
         idToComment.put(comment.getCommentId(), comment);
-        postIdToLatestComments.get(comment.getPost().getPostId()).remove(new IdAndCreatedDate(comment.getCommentId(), comment.getCreatedAt()));
+        postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
     }
 
     @Override

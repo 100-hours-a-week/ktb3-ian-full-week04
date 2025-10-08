@@ -1,7 +1,6 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.Post;
-import ktb3.full.week04.dto.page.IdAndCreatedDate;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.PostRepository;
@@ -20,7 +19,7 @@ public class PostMemoryRepository implements PostRepository {
     private final AtomicLong postIdCounter = new AtomicLong(1L);
 
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
-    private final List<IdAndCreatedDate> latestPosts = new ArrayList<>();
+    private final List<Long> latestPosts = new ArrayList<>();
 
     @Override
     public PageResponse<Post> findAll(PageRequest pageRequest) {
@@ -38,7 +37,7 @@ public class PostMemoryRepository implements PostRepository {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
         idToPost.put(postId, post);
-        latestPosts.add(new IdAndCreatedDate(postId, post.getCreatedAt()));
+        latestPosts.add(postId);
     }
 
     @Override
@@ -55,6 +54,6 @@ public class PostMemoryRepository implements PostRepository {
     public void delete(Post post) {
         // soft delete
         idToPost.put(post.getPostId(), post);
-        latestPosts.remove(new IdAndCreatedDate(post.getPostId(), post.getCreatedAt()));
+        latestPosts.remove(post.getPostId());
     }
 }
