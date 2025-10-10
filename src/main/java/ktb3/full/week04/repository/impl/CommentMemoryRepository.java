@@ -52,8 +52,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public void delete(Comment comment) {
-        // soft delete
-        idToComment.put(comment.getCommentId(), comment);
+        idToComment.remove(comment.getCommentId());
         postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
     }
 

@@ -76,11 +76,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(long userId, long postId) {
+        // soft delete
         Post post = getOrThrow(postId);
         userService.validatePermission(userId, post.getUser().getUserId());
         post.delete();
 
-        postRepository.delete(post);
+        postRepository.update(post);
     }
 
     @Override

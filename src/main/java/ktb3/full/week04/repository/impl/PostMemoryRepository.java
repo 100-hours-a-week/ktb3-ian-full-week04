@@ -58,7 +58,6 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public void delete(Post post) {
-        // soft delete
-        idToPost.put(post.getPostId(), post);
+        idToPost.remove(post.getPostId());
     }
 }
