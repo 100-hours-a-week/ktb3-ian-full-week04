@@ -59,6 +59,15 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public PageResponse<Comment> findAll(long postId, PageRequest pageRequest) {
-        return this.findAllByLatest(idToComment, postIdToLatestComments.get(postId), pageRequest);
+        List<Long> ids = postIdToLatestComments.get(postId);
+        int start = ids.size() - getOffset(pageRequest) - 1;
+        int end = Math.max(start - pageRequest.getSize() + 1, 0);
+
+        List<Comment> content = new ArrayList<>();
+        for (int i = start; i >= end; i--) {
+            content.add(idToComment.get(ids.get(i)));
+        }
+
+        return PageResponse.of(content, pageRequest.getPage(), pageRequest.getSize(), end > 0);
     }
 }

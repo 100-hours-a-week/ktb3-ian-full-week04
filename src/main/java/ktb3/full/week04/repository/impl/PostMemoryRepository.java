@@ -19,11 +19,18 @@ public class PostMemoryRepository implements PostRepository {
     private final AtomicLong postIdCounter = new AtomicLong(1L);
 
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
-    private final List<Long> latestPosts = new ArrayList<>();
 
     @Override
     public PageResponse<Post> findAll(PageRequest pageRequest) {
-        return this.findAllByLatest(idToPost, latestPosts, pageRequest);
+        int start = idToPost.size() - getOffset(pageRequest);
+        int end = Math.max(start - pageRequest.getSize() + 1, 1);
+
+        List<Post> content = new ArrayList<>();
+        for (long i = start; i >= end; i--) {
+            content.add(idToPost.get(i));
+        }
+
+        return PageResponse.of(content, pageRequest.getPage(), pageRequest.getSize(), end > 1);
     }
 
     @Override
@@ -37,7 +44,6 @@ public class PostMemoryRepository implements PostRepository {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
         idToPost.put(postId, post);
-        latestPosts.add(postId);
     }
 
     @Override
@@ -54,6 +60,5 @@ public class PostMemoryRepository implements PostRepository {
     public void delete(Post post) {
         // soft delete
         idToPost.put(post.getPostId(), post);
-        latestPosts.remove(post.getPostId());
     }
 }
