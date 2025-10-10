@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class PageRequest {
 
     @Positive
-    private final int page;
+    private final int number;
 
     @Positive
     private final int size;

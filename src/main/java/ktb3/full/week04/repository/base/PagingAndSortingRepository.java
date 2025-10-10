@@ -5,6 +5,6 @@ import ktb3.full.week04.dto.page.PageRequest;
 public interface PagingAndSortingRepository<T> {
 
     default int getOffset(PageRequest pageRequest) {
-        return (pageRequest.getPage() - 1) * pageRequest.getSize();
+        return (pageRequest.getNumber() - 1) * pageRequest.getSize();
     }
 }

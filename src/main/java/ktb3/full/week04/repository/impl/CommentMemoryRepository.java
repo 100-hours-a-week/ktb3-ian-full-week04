@@ -83,7 +83,7 @@ public class CommentMemoryRepository implements CommentRepository {
             content.add(idToComment.get(ids.get(i)));
         }
 
-        return PageResponse.of(content, pageRequest.getPage(), pageRequest.getSize(), end > 0);
+        return PageResponse.of(content, pageRequest, ids.size());
     }
 
     public List<Comment> findAllByPostId(long postId) {
