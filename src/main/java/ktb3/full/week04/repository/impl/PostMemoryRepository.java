@@ -30,7 +30,7 @@ public class PostMemoryRepository implements PostRepository {
             content.add(idToPost.get(i));
         }
 
-        return PageResponse.of(content, pageRequest.getPage(), pageRequest.getSize(), end > 1);
+        return PageResponse.of(content, pageRequest, idToPost.size());
     }
 
     @Override
