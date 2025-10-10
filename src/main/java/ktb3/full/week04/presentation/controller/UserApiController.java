@@ -2,11 +2,13 @@ package ktb3.full.week04.presentation.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import ktb3.full.week04.common.annotation.constraint.EmailPattern;
 import ktb3.full.week04.common.annotation.constraint.NicknamePattern;
 import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
+import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class UserApiController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
         long userId = userService.register(userRegisterRequest);
-        return ResponseEntity.created(URI.create("/users/" + userId))
+        return ResponseEntity.created(URI.create(String.format("/users/%d", userId)))
                 .body(ApiResponse.getBaseResponse());
     }
 
@@ -53,5 +55,12 @@ public class UserApiController {
         session.setAttribute(SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER, loggedInUser);
         return ResponseEntity.ok()
                 .body(ApiResponse.getBaseResponse());
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(@Positive @PathVariable("userId") long userId) {
+        UserProfileResponse userProfile = userService.getUserProfile(userId);
+        return ResponseEntity.ok()
+                .body(ApiResponse.of(userProfile));
     }
 }

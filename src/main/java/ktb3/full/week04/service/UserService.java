@@ -5,6 +5,7 @@ import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
+import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.service.base.Findable;
@@ -19,13 +20,15 @@ public interface UserService extends Findable<User, Long> {
 
     LoggedInUser login(UserLoginRequest request);
 
-    UserAccountResponse getUserAccount(Long userId);
+    UserAccountResponse getUserAccount(long userId);
 
-    void updateAccount(Long userId, UserAccountUpdateRequest request);
+    UserProfileResponse getUserProfile(long userId);
 
-    void updatePassword(Long userId, UserPasswordUpdateRequest request);
+    void updateAccount(long userId, UserAccountUpdateRequest request);
 
-    void deleteAccount(Long userId);
+    void updatePassword(long userId, UserPasswordUpdateRequest request);
+
+    void deleteAccount(long userId);
 
     void validatePermission(long requestUserId, long actualUserId);
 }
