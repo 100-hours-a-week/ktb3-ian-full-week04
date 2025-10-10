@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
@@ -21,6 +23,8 @@ public class CommentMemoryRepository implements CommentRepository {
     private final Map<Long, Comment> idToComment = new ConcurrentHashMap<>();
     private final Map<Long, List<Long>> postIdToLatestComments = new ConcurrentHashMap<>();
 
+    private final Lock commentLock = new ReentrantLock();
+
     @Override
     public void save(Comment comment) {
         long commentId = commentIdCounter.getAndIncrement();
@@ -28,10 +32,16 @@ public class CommentMemoryRepository implements CommentRepository {
         idToComment.put(commentId, comment);
 
         long postId = comment.getPost().getPostId();
-        if (!postIdToLatestComments.containsKey(postId)) {
-            postIdToLatestComments.put(postId, new ArrayList<>());
+
+        try {
+            commentLock.lock();
+            if (!postIdToLatestComments.containsKey(postId)) {
+                postIdToLatestComments.put(postId, new ArrayList<>());
+            }
+            postIdToLatestComments.get(postId).add(commentId);
+        } finally {
+            commentLock.unlock();
         }
-        postIdToLatestComments.get(postId).add(commentId);
     }
 
     @Override
@@ -53,7 +63,13 @@ public class CommentMemoryRepository implements CommentRepository {
     @Override
     public void delete(Comment comment) {
         idToComment.remove(comment.getCommentId());
-        postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
+
+        try {
+            commentLock.lock();
+            postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
+        } finally {
+            commentLock.unlock();
+        }
     }
 
     @Override
@@ -68,5 +84,12 @@ public class CommentMemoryRepository implements CommentRepository {
         }
 
         return PageResponse.of(content, pageRequest.getPage(), pageRequest.getSize(), end > 0);
+    }
+
+    public List<Comment> findAllByPostId(long postId) {
+        List<Comment> comments = new ArrayList<>();
+        postIdToLatestComments.get(postId).forEach(commentId ->
+                comments.add(idToComment.get(commentId)));
+        return comments;
     }
 }
