@@ -15,7 +15,7 @@ public interface UserService extends Findable<User, Long> {
 
     boolean validateNicknameAvailable(String nickname);
 
-    void register(UserRegisterRequest request);
+    long register(UserRegisterRequest request);
 
     LoggedInUser login(UserLoginRequest request);
 
