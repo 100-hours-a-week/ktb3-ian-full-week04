@@ -26,7 +26,7 @@ public class CommentMemoryRepository implements CommentRepository {
     private final Lock commentLock = new ReentrantLock();
 
     @Override
-    public void save(Comment comment) {
+    public Long save(Comment comment) {
         long commentId = commentIdCounter.getAndIncrement();
         comment.save(commentId);
         idToComment.put(commentId, comment);
@@ -42,6 +42,8 @@ public class CommentMemoryRepository implements CommentRepository {
         } finally {
             commentLock.unlock();
         }
+
+        return commentId;
     }
 
     @Override
