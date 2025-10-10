@@ -30,11 +30,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(UserRegisterRequest request) {
+    public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
 
-        userRepository.save(request.toEntity());
+        return userRepository.save(request.toEntity());
     }
 
     @Override

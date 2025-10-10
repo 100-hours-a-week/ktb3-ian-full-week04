@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 import static ktb3.full.week04.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
 @Validated
@@ -40,8 +42,8 @@ public class UserApiController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
-        userService.register(userRegisterRequest);
-        return ResponseEntity.ok()
+        long userId = userService.register(userRegisterRequest);
+        return ResponseEntity.created(URI.create("/users/" + userId))
                 .body(ApiResponse.getBaseResponse());
     }
 
