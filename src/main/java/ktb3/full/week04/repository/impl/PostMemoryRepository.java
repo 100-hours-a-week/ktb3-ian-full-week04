@@ -40,10 +40,12 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public void save(Post post) {
+    public Long save(Post post) {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
         idToPost.put(postId, post);
+
+        return postId;
     }
 
     @Override

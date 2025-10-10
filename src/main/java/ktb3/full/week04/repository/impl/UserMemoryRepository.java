@@ -29,13 +29,15 @@ public class UserMemoryRepository implements UserRepository {
     }
 
     @Override
-    public void save(User user) {
+    public Long save(User user) {
         long userId = userIdCounter.getAndIncrement();
         user.save(userId);
 
         idToUser.put(userId, user);
         emailToId.put(user.getEmail(), userId);
         nicknameToId.put(user.getNickname(), userId);
+
+        return userId;
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface CrudRepository<T, ID> {
 
-    void save(T entity);
+    ID save(T entity);
 
     void saveAll(Iterable<T> entities);
 
