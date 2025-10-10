@@ -21,7 +21,7 @@ public class PostMemoryRepository implements PostRepository {
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
 
     @Override
-    public PageResponse<Post> findAll(PageRequest pageRequest) {
+    public PageResponse<Post> findAllByLatest(PageRequest pageRequest) {
         int start = idToPost.size() - getOffset(pageRequest);
         int end = Math.max(start - pageRequest.getSize() + 1, 1);
 

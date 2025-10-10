@@ -8,5 +8,5 @@ import ktb3.full.week04.repository.base.PagingAndSortingRepository;
 
 public interface CommentRepository extends CrudRepository<Comment, Long>, PagingAndSortingRepository<Comment> {
 
-    PageResponse<Comment> findAll(long postId, PageRequest pageRequest);
+    PageResponse<Comment> findAllByLatest(long postId, PageRequest pageRequest);
 }
