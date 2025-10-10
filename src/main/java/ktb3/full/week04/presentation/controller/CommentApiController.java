@@ -32,6 +32,13 @@ public class CommentApiController {
                 .body(ApiResponse.of(response));
     }
 
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> getAllComments(@Positive @PathVariable("commentId") long commentId) {
+        CommentResponse response = commentService.getComment(commentId);
+        return ResponseEntity.ok()
+                .body(ApiResponse.of(response));
+    }
+
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<Void>> createComment(
             @Authentication LoggedInUser loggedInUser,

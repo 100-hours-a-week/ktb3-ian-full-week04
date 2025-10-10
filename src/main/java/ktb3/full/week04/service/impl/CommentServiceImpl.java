@@ -36,6 +36,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public CommentResponse getComment(long commentId) {
+        Comment comment = getOrThrow(commentId);
+        return CommentResponse.from(comment);
+    }
+
+    @Override
     public long createComment(long userId, long postId, CommentCreateRequest request) {
         User user = userService.getOrThrow(userId);
         Post post = postService.getOrThrow(postId);
