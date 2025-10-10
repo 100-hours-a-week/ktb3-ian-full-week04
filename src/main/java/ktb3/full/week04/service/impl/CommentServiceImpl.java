@@ -36,12 +36,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void createComment(long userId, long postId, CommentCreateRequest request) {
+    public long createComment(long userId, long postId, CommentCreateRequest request) {
         User user = userService.getOrThrow(userId);
         Post post = postService.getOrThrow(postId);
         Comment comment = request.toEntity(user, post);
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     @Override

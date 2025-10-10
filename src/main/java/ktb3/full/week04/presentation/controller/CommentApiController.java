@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RequiredArgsConstructor
 @RestController
 public class CommentApiController {
@@ -35,8 +37,8 @@ public class CommentApiController {
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody CommentCreateRequest request) {
-        commentService.createComment(loggedInUser.getUserId(), postId, request);
-        return ResponseEntity.ok()
+        long commentId = commentService.createComment(loggedInUser.getUserId(), postId, request);
+        return ResponseEntity.created(URI.create(String.format("/comments/%d", commentId)))
                 .body(ApiResponse.getBaseResponse());
     }
 
