@@ -6,6 +6,7 @@ import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
+import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.repository.UserRepository;
@@ -50,13 +51,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserAccountResponse getUserAccount(Long userId) {
+    public UserAccountResponse getUserAccount(long userId) {
         User user = getOrThrow(userId);
         return UserAccountResponse.from(user);
     }
 
     @Override
-    public void updateAccount(Long userId, UserAccountUpdateRequest request) {
+    public UserProfileResponse getUserProfile(long userId) {
+        User user = getOrThrow(userId);
+        return UserProfileResponse.from(user);
+    }
+
+    @Override
+    public void updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
         if (request.getNickname() != null) {
@@ -72,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long userId, UserPasswordUpdateRequest request) {
+    public void updatePassword(long userId, UserPasswordUpdateRequest request) {
         User user = getOrThrow(userId);
         user.updatePassword(request.getPassword());
 
@@ -80,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteAccount(Long userId) {
+    public void deleteAccount(long userId) {
         // soft delete
         User user = getOrThrow(userId);
         user.delete();
