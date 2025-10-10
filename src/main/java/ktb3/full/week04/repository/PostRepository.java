@@ -8,5 +8,5 @@ import ktb3.full.week04.repository.base.PagingAndSortingRepository;
 
 public interface PostRepository extends CrudRepository<Post, Long>, PagingAndSortingRepository<Post> {
 
-    PageResponse<Post> findAll(PageRequest pageRequest);
+    PageResponse<Post> findAllByLatest(PageRequest pageRequest);
 }

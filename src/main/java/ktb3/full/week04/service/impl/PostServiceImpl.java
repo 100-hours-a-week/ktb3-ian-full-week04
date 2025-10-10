@@ -29,7 +29,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<PostResponse> getAllPosts(PageRequest pageRequest) {
-        PageResponse<Post> posts = postRepository.findAll(pageRequest);
+        PageResponse<Post> posts = postRepository.findAllByLatest(pageRequest);
         List<PostResponse> responses = posts.getContent().stream().map(PostResponse::from).toList();
 
         return PageResponse.of(responses, posts.getPage(), posts.getSize(), posts.isHasNext());
