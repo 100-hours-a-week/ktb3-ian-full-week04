@@ -58,11 +58,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(long userId, long commentId) {
+        // soft delete
         Comment comment = getOrThrow(commentId);
         userService.validatePermission(userId, comment.getUser().getUserId());
         comment.delete();
 
-        commentRepository.delete(comment);
+        commentRepository.update(comment);
     }
 
     @Override
