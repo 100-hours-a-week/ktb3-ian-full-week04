@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePost(long userId, long postId, PostUpdateRequest request) {
+    public PostDetailResponse updatePost(long userId, long postId, PostUpdateRequest request) {
         Post post = getOrThrow(postId);
         userService.validatePermission(userId, post.getUser().getUserId());
 
@@ -72,6 +72,9 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.update(post);
+        boolean liked = postLikeRepository.existsAndLiked(userId, postId);
+
+        return PostDetailResponse.from(post, liked);
     }
 
     @Override
