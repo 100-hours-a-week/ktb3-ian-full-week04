@@ -9,6 +9,7 @@ import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
 import ktb3.full.week04.dto.response.UserProfileResponse;
+import ktb3.full.week04.dto.response.UserValidationResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,17 +30,17 @@ public class UserApiController {
     private final UserService userService;
 
     @GetMapping("/email-validation")
-    public ResponseEntity<ApiResponse<Boolean>> validateEmailAvailable(@EmailPattern @RequestParam("email") String email) {
-        boolean available = userService.validateEmailAvailable(email);
+    public ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(@EmailPattern @RequestParam("email") String email) {
+        UserValidationResponse userValidationResponse = userService.validateEmailAvailable(email);
         return ResponseEntity.ok()
-                .body(ApiResponse.of(available));
+                .body(ApiResponse.of(userValidationResponse));
     }
 
     @GetMapping("/nickname-validation")
-    public ResponseEntity<ApiResponse<Boolean>> validateNicknameAvailable(@NicknamePattern @RequestParam("nickname") String nickname) {
-        boolean available = userService.validateNicknameAvailable(nickname);
+    public ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(@NicknamePattern @RequestParam("nickname") String nickname) {
+        UserValidationResponse userValidationResponse = userService.validateNicknameAvailable(nickname);
         return ResponseEntity.ok()
-                .body(ApiResponse.of(available));
+                .body(ApiResponse.of(userValidationResponse));
     }
 
     @PostMapping

@@ -7,6 +7,7 @@ import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.response.UserProfileResponse;
+import ktb3.full.week04.dto.response.UserValidationResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.repository.UserRepository;
@@ -21,13 +22,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public boolean validateEmailAvailable(String email) {
-        return !userRepository.existsByEmail(email);
+    public UserValidationResponse validateEmailAvailable(String email) {
+        return new UserValidationResponse(!userRepository.existsByEmail(email));
     }
 
     @Override
-    public boolean validateNicknameAvailable(String nickname) {
-        return !userRepository.existsByNickname(nickname);
+    public UserValidationResponse validateNicknameAvailable(String nickname) {
+        return new UserValidationResponse(!userRepository.existsByNickname(nickname));
     }
 
     @Override
