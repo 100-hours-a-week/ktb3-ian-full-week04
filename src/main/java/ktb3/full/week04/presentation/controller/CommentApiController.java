@@ -13,10 +13,12 @@ import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@Validated
 @RequiredArgsConstructor
 @RestController
 public class CommentApiController {
