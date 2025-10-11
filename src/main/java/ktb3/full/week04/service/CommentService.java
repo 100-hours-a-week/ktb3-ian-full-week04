@@ -14,7 +14,7 @@ public interface CommentService extends Findable<Comment, Long> {
 
     CommentResponse getComment(long commentId);
 
-    long createComment(long userId, long postId, CommentCreateRequest request);
+    CommentResponse createComment(long userId, long postId, CommentCreateRequest request);
 
     void updateComment(long userId, long commentId, CommentUpdateRequest request);
 
