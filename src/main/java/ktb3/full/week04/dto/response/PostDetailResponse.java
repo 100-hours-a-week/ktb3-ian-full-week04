@@ -20,6 +20,7 @@ public class PostDetailResponse {
     private final String image;
     private final boolean liked;
     private final LocalDateTime createdDate;
+    private final LocalDateTime updatedDate;
     private final int likeCount;
     private final int commentCount;
     private final int viewCount;
@@ -34,6 +35,7 @@ public class PostDetailResponse {
                 .image(post.getImage())
                 .liked(liked)
                 .createdDate(post.getCreatedAt())
+                .updatedDate(post.getUpdatedAt())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
                 .viewCount(post.getViewCount())
