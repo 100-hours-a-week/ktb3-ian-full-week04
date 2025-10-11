@@ -40,13 +40,13 @@ public class CommentApiController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<Void>> createComment(
+    public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody CommentCreateRequest request) {
-        long commentId = commentService.createComment(loggedInUser.getUserId(), postId, request);
-        return ResponseEntity.created(URI.create(String.format("/comments/%d", commentId)))
-                .body(ApiResponse.getBaseResponse());
+        CommentResponse response = commentService.createComment(loggedInUser.getUserId(), postId, request);
+        return ResponseEntity.created(URI.create(String.format("/comments/%d", response.getCommentId())))
+                .body(ApiResponse.of(response));
     }
 
     @PatchMapping("/comments/{commentId}")
