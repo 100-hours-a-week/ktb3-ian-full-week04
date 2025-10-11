@@ -33,7 +33,7 @@ public class CommentApiController {
     }
 
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> getAllComments(@Positive @PathVariable("commentId") long commentId) {
+    public ResponseEntity<ApiResponse<CommentResponse>> getComment(@Positive @PathVariable("commentId") long commentId) {
         CommentResponse response = commentService.getComment(commentId);
         return ResponseEntity.ok()
                 .body(ApiResponse.of(response));
