@@ -53,13 +53,13 @@ public class PostApiController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<ApiResponse<Void>> updatePost(
+    public ResponseEntity<ApiResponse<PostDetailResponse>> updatePost(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody PostUpdateRequest request) {
-        postService.updatePost(loggedInUser.getUserId(), postId, request);
+        PostDetailResponse response = postService.updatePost(loggedInUser.getUserId(), postId, request);
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiResponse.of(response));
     }
 
     @DeleteMapping("/{postId}")

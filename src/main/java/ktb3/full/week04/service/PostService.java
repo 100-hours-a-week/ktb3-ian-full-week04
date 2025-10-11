@@ -17,7 +17,7 @@ public interface PostService extends Findable<Post, Long> {
 
     PostDetailResponse createPost(long userId, PostCreateRequest request);
 
-    void updatePost(long userId, long postId, PostUpdateRequest request);
+    PostDetailResponse updatePost(long userId, long postId, PostUpdateRequest request);
 
     void deletePost(long userId, long postId);
 
