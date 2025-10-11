@@ -9,6 +9,7 @@ import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
 import ktb3.full.week04.dto.response.PostDetailResponse;
+import ktb3.full.week04.dto.response.PostLikeRespnose;
 import ktb3.full.week04.dto.response.PostResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.service.PostService;
@@ -72,11 +73,11 @@ public class PostApiController {
     }
 
     @PatchMapping("/{postId}/like")
-    public ResponseEntity<ApiResponse<Void>> likePost(
+    public ResponseEntity<ApiResponse<PostLikeRespnose>> likePost(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId) {
-        postService.createOrUpdateLiked(loggedInUser.getUserId(), postId);
+        PostLikeRespnose postLikeRespnose = postService.createOrUpdateLiked(loggedInUser.getUserId(), postId);
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiResponse.of(postLikeRespnose));
     }
 }

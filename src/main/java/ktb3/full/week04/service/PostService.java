@@ -6,6 +6,7 @@ import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.PostDetailResponse;
+import ktb3.full.week04.dto.response.PostLikeRespnose;
 import ktb3.full.week04.dto.response.PostResponse;
 import ktb3.full.week04.service.base.Findable;
 
@@ -21,5 +22,5 @@ public interface PostService extends Findable<Post, Long> {
 
     void deletePost(long userId, long postId);
 
-    void createOrUpdateLiked(long userId, long postId);
+    PostLikeRespnose createOrUpdateLiked(long userId, long postId);
 }
