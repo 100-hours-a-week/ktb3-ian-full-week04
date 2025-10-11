@@ -8,6 +8,7 @@ import ktb3.full.week04.common.annotation.constraint.NicknamePattern;
 import ktb3.full.week04.dto.request.UserLoginRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
+import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.response.UserValidationResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
@@ -51,11 +52,11 @@ public class UserApiController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
-        LoggedInUser loggedInUser = userService.login(userLoginRequest);
-        session.setAttribute(SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER, loggedInUser);
+    public ResponseEntity<ApiResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
+        UserAccountResponse userAccountResponse = userService.login(userLoginRequest);
+        session.setAttribute(SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER, new LoggedInUser(userAccountResponse.getUserId()));
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiResponse.of(userAccountResponse));
     }
 
     @GetMapping("/{userId}")

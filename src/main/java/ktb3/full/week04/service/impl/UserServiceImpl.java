@@ -8,7 +8,6 @@ import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.response.UserValidationResponse;
-import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.repository.UserRepository;
 import ktb3.full.week04.service.UserService;
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoggedInUser login(UserLoginRequest request) {
+    public UserAccountResponse login(UserLoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialsException::new);
 
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidCredentialsException();
         }
 
-        return LoggedInUser.from(user);
+        return UserAccountResponse.from(user);
     }
 
     @Override
