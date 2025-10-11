@@ -28,12 +28,12 @@ public class AuthenticatedUserApiController {
     }
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<Void>> updateUserAccount(
+    public ResponseEntity<ApiResponse<UserAccountResponse>> updateUserAccount(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest) {
-        userService.updateAccount(loggedInUser.getUserId(), userAccountUpdateRequest);
+        UserAccountResponse userAccountResponse = userService.updateAccount(loggedInUser.getUserId(), userAccountUpdateRequest);
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiResponse.of(userAccountResponse));
     }
 
     @PatchMapping("/password")

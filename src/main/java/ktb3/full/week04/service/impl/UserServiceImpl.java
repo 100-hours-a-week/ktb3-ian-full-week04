@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateAccount(long userId, UserAccountUpdateRequest request) {
+    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
         if (request.getNickname() != null) {
@@ -76,6 +76,8 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.update(user);
+
+        return UserAccountResponse.from(user);
     }
 
     @Override

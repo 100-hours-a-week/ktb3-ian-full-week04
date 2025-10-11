@@ -24,7 +24,7 @@ public interface UserService extends Findable<User, Long> {
 
     UserProfileResponse getUserProfile(long userId);
 
-    void updateAccount(long userId, UserAccountUpdateRequest request);
+    UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request);
 
     void updatePassword(long userId, UserPasswordUpdateRequest request);
 
