@@ -9,6 +9,7 @@ import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.PostDetailResponse;
+import ktb3.full.week04.dto.response.PostLikeRespnose;
 import ktb3.full.week04.dto.response.PostResponse;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
@@ -88,7 +89,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void createOrUpdateLiked(long userId, long postId) {
+    public PostLikeRespnose createOrUpdateLiked(long userId, long postId) {
         User user = userService.getOrThrow(userId);
         Post post = getOrThrow(postId);
         PostLike postLike = postLikeRepository.findByUserAndPostId(userId, postId)
@@ -96,6 +97,8 @@ public class PostServiceImpl implements PostService {
         postLike.toggle();
 
         postLikeRepository.saveOrUpdate(postLike);
+
+        return new PostLikeRespnose(postLike.isLiked());
     }
 
     @Override
