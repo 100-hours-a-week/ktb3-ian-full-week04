@@ -45,13 +45,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public long createPost(long userId, PostCreateRequest request) {
+    public PostDetailResponse createPost(long userId, PostCreateRequest request) {
         User user = userService.getOrThrow(userId);
         Post post = request.toEntity(user);
 
         postRepository.save(post);
 
-        return post.getPostId();
+        return PostDetailResponse.from(post, false);
     }
 
     @Override

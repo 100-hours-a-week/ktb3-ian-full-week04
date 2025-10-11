@@ -44,12 +44,12 @@ public class PostApiController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPost(
+    public ResponseEntity<ApiResponse<PostDetailResponse>> createPost(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody PostCreateRequest request) {
-        long postId = postService.createPost(loggedInUser.getUserId(), request);
-        return ResponseEntity.created(URI.create(String.format("/posts/%d", postId)))
-                .body(ApiResponse.getBaseResponse());
+        PostDetailResponse response = postService.createPost(loggedInUser.getUserId(), request);
+        return ResponseEntity.created(URI.create(String.format("/posts/%d", response.getPostId())))
+                .body(ApiResponse.of(response));
     }
 
     @PatchMapping("/{postId}")
