@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void updateComment(long userId, long commentId, CommentUpdateRequest request) {
+    public CommentResponse updateComment(long userId, long commentId, CommentUpdateRequest request) {
         Comment comment = getOrThrow(commentId);
         userService.validatePermission(userId, comment.getUser().getUserId());
 
@@ -62,6 +62,8 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.update(comment);
+
+        return CommentResponse.from(comment);
     }
 
     @Override

@@ -50,13 +50,13 @@ public class CommentApiController {
     }
 
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> updatePost(
+    public ResponseEntity<ApiResponse<CommentResponse>> updatePost(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("commentId") long commentId,
             @Valid @RequestBody CommentUpdateRequest request) {
-        commentService.updateComment(loggedInUser.getUserId(), commentId, request);
+        CommentResponse response = commentService.updateComment(loggedInUser.getUserId(), commentId, request);
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiResponse.of(response));
     }
 
     @DeleteMapping("/comments/{commentId}")
