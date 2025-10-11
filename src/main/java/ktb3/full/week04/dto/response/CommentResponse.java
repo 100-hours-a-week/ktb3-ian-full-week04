@@ -1,6 +1,7 @@
 package ktb3.full.week04.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import ktb3.full.week04.domain.Comment;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class CommentResponse {
     private final long userId;
     private final String author;
     private final String content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdDate;
 
     public static CommentResponse from(Comment comment) {

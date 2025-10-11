@@ -1,5 +1,6 @@
 package ktb3.full.week04.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import ktb3.full.week04.domain.Post;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class PostResponse {
     private final long postId;
     private final String title;
     private final String author;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdDate;
     private final int likeCount;
     private final int commentCount;
