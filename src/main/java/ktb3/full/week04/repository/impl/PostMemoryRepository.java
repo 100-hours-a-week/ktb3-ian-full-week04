@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Repository
 public class PostMemoryRepository implements PostRepository {
@@ -20,16 +22,19 @@ public class PostMemoryRepository implements PostRepository {
     private final AtomicLong activePostCounter = new AtomicLong(0L);
 
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
+    private final List<Long> latest =  new ArrayList<>();
+
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public PageResponse<Post> findAllByLatest(PageRequest pageRequest) {
-        long start = idToPost.size() - getOffset(pageRequest);
+        int start = latest.size() - getOffset(pageRequest);
 
         List<Post> content = new ArrayList<>();
         int count = 0;
-        long curr = start;
+        int curr = start;
         while (count < pageRequest.getSize() && curr >= 1) {
-            Post post = idToPost.get(curr--);
+            Post post = idToPost.get(latest.get(curr--));
 
             if (post.isDeleted()) {
                 continue;
@@ -50,15 +55,22 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public Long save(Post post) {
-        long postId = postIdCounter.getAndIncrement();
-        post.save(postId);
+        long postId;
 
-        if (post.getCreatedAt() == null) {
-            post.auditCreate();
+        try {
+            lock.lock();
+            postId = postIdCounter.getAndIncrement();
+            post.save(postId);
+            if (post.getCreatedAt() == null) {
+                post.auditCreate();
+            }
+
+            idToPost.put(postId, post);
+            latest.add(postId);
+            activePostCounter.getAndIncrement();
+        } finally {
+            lock.unlock();
         }
-
-        idToPost.put(postId, post);
-        activePostCounter.getAndIncrement();
 
         return postId;
     }
@@ -84,5 +96,16 @@ public class PostMemoryRepository implements PostRepository {
     public void delete(Post post) {
         idToPost.remove(post.getPostId());
         activePostCounter.getAndDecrement();
+
+        try {
+            lock.lock();
+            latest.remove(post.getPostId());
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public List<Post> findAll() {
+        return latest.stream().map(idToPost::get).toList();
     }
 }
