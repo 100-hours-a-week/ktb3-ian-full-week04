@@ -41,17 +41,14 @@ public class Post extends Auditing {
 
     public void updateTitle(String title) {
         this.title = title;
-        this.auditUpdate();
     }
 
     public void updateContent(String content) {
         this.content = content;
-        this.auditUpdate();
     }
 
     public void updateImage(String image) {
         this.image = image;
-        this.auditUpdate();
     }
 
     public void increaseLikeCount() {
@@ -72,5 +69,9 @@ public class Post extends Auditing {
 
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

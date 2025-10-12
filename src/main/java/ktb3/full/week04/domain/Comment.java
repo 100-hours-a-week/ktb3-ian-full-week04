@@ -34,4 +34,8 @@ public class Comment extends Auditing {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }
