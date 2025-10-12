@@ -14,11 +14,16 @@ import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public UserValidationResponse validateEmailAvailable(String email) {
@@ -32,10 +37,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long register(UserRegisterRequest request) {
-        validateEmailDuplication(request.getEmail());
-        validateNicknameDuplication(request.getNickname());
+        long savedId;
+        lock.lock();
+        try {
+            validateEmailDuplication(request.getEmail());
+            validateNicknameDuplication(request.getNickname());
+            savedId = userRepository.save(request.toEntity());
+        } finally {
+            lock.unlock();
+        }
 
-        return userRepository.save(request.toEntity());
+        return savedId;
     }
 
     @Override
@@ -66,9 +78,14 @@ public class UserServiceImpl implements UserService {
     public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
-        if (request.getNickname() != null) {
-            validateNicknameDuplication(request.getNickname());
-            user.updateNickname(request.getNickname());
+        lock.lock();
+        try {
+            if (request.getNickname() != null) {
+                validateNicknameDuplication(request.getNickname());
+                user.updateNickname(request.getNickname());
+            }
+        } finally {
+            lock.unlock();
         }
 
         if (request.getProfileImage() != null) {
