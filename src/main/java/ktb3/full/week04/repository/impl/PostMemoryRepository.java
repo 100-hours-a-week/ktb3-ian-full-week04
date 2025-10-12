@@ -17,20 +17,29 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PostMemoryRepository implements PostRepository {
 
     private final AtomicLong postIdCounter = new AtomicLong(1L);
+    private final AtomicLong activePostCounter = new AtomicLong(0L);
 
     private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
 
     @Override
     public PageResponse<Post> findAllByLatest(PageRequest pageRequest) {
-        int start = idToPost.size() - getOffset(pageRequest);
-        int end = Math.max(start - pageRequest.getSize() + 1, 1);
+        long start = idToPost.size() - getOffset(pageRequest);
 
         List<Post> content = new ArrayList<>();
-        for (long i = start; i >= end; i--) {
-            content.add(idToPost.get(i));
+        int count = 0;
+        long curr = start;
+        while (count < pageRequest.getSize() && curr >= 1) {
+            Post post = idToPost.get(curr--);
+
+            if (post.isDeleted()) {
+                continue;
+            }
+
+            content.add(post);
+            count++;
         }
 
-        return PageResponse.of(content, pageRequest, idToPost.size());
+        return PageResponse.of(content, pageRequest, activePostCounter.get());
     }
 
     @Override
@@ -44,6 +53,7 @@ public class PostMemoryRepository implements PostRepository {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
         idToPost.put(postId, post);
+        activePostCounter.getAndIncrement();
 
         return postId;
     }
@@ -56,10 +66,14 @@ public class PostMemoryRepository implements PostRepository {
     @Override
     public void update(Post post) {
         idToPost.put(post.getPostId(), post);
+        if (post.isDeleted()) {
+            activePostCounter.getAndDecrement();
+        }
     }
 
     @Override
     public void delete(Post post) {
         idToPost.remove(post.getPostId());
+        activePostCounter.getAndDecrement();
     }
 }
