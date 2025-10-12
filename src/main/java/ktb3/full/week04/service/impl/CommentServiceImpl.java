@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +28,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserService userService;
     private final PostService postService;
+
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public PageResponse<CommentResponse> getAllComments(long postId, PageRequest pageRequest) {
@@ -46,7 +50,13 @@ public class CommentServiceImpl implements CommentService {
         User user = userService.getOrThrow(userId);
         Post post = postService.getOrThrow(postId);
         Comment comment = request.toEntity(user, post);
-        post.increaseCommentCount();
+
+        lock.lock();
+        try {
+            post.increaseCommentCount();
+        } finally {
+            lock.unlock();
+        }
 
         commentRepository.save(comment);
 
@@ -73,7 +83,13 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = getOrThrow(commentId);
         userService.validatePermission(userId, comment.getUser().getUserId());
         comment.delete();
-        comment.getPost().decreaseCommentCount();
+
+        lock.lock();
+        try {
+            comment.getPost().decreaseCommentCount();
+        } finally {
+            lock.unlock();
+        }
 
         commentRepository.update(comment);
     }
