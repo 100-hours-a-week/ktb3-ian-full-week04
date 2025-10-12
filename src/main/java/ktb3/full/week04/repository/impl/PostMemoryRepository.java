@@ -49,8 +49,7 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long postId) {
-        Post post = idToPost.get(postId);
-        return Post.validateExists(post);
+        return validateExists(idToPost.get(postId));
     }
 
     @Override
@@ -83,12 +82,10 @@ public class PostMemoryRepository implements PostRepository {
     @Override
     public void update(Post post) {
         if (post.isDeleted()) {
-            post.auditDelete();
             activePostCounter.getAndDecrement();
-        } else {
-            post.auditUpdate();
         }
 
+        post.auditUpdate();
         idToPost.put(post.getPostId(), post);
     }
 
@@ -107,5 +104,13 @@ public class PostMemoryRepository implements PostRepository {
 
     public List<Post> findAll() {
         return latest.stream().map(idToPost::get).toList();
+    }
+
+    private Optional<Post> validateExists(Post post) {
+        if (post == null || post.isDeleted()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(post);
     }
 }

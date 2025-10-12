@@ -51,8 +51,7 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long userId) {
-        User user = idToUser.get(userId);
-        return User.validateExists(user);
+        return validateExists(idToUser.get(userId));
     }
 
     @Override
@@ -63,7 +62,7 @@ public class UserMemoryRepository implements UserRepository {
             return Optional.empty();
         }
 
-        return User.validateExists(idToUser.get(userId));
+        return validateExists(idToUser.get(userId));
     }
 
     @Override
@@ -83,5 +82,13 @@ public class UserMemoryRepository implements UserRepository {
         idToUser.remove(user.getUserId());
         emailToId.remove(user.getEmail());
         nicknameToId.remove(user.getNickname());
+    }
+
+    private Optional<User> validateExists(User user) {
+        if (user == null || user.isDeleted()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(user);
     }
 }

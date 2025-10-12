@@ -62,19 +62,16 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(Long commentId) {
-        Comment comment = idToComment.get(commentId);
-        return Comment.validateExists(comment);
+        return validateExists(idToComment.get(commentId));
     }
 
     @Override
     public void update(Comment comment) {
         if (comment.isDeleted()) {
             postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
-            comment.auditDelete();
-        } else {
-            comment.auditUpdate();
         }
 
+        comment.auditUpdate();
         idToComment.put(comment.getCommentId(), comment);
     }
 
@@ -123,5 +120,13 @@ public class CommentMemoryRepository implements CommentRepository {
         postIdToLatestComments.get(postId).forEach(commentId ->
                 comments.add(idToComment.get(commentId)));
         return comments;
+    }
+
+    private Optional<Comment> validateExists(Comment comment) {
+        if (comment == null || comment.isDeleted()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(comment);
     }
 }

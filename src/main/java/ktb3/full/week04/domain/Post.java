@@ -19,6 +19,7 @@ public class Post extends Auditing {
     private int likeCount;
     private int commentCount;
     private int viewCount;
+    private boolean deleted;
 
     public static Post create(User user, String title, String content, String image) {
         return Post.builder()
@@ -30,6 +31,7 @@ public class Post extends Auditing {
                 .likeCount(0)
                 .commentCount(0)
                 .viewCount(0)
+                .deleted(false)
                 .build();
     }
 
