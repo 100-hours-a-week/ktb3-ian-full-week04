@@ -46,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
         User user = userService.getOrThrow(userId);
         Post post = postService.getOrThrow(postId);
         Comment comment = request.toEntity(user, post);
+        post.increaseCommentCount();
 
         commentRepository.save(comment);
 
@@ -71,6 +72,7 @@ public class CommentServiceImpl implements CommentService {
         // soft delete
         Comment comment = getOrThrow(commentId);
         userService.validatePermission(userId, comment.getUser().getUserId());
+        comment.getPost().decreaseCommentCount();
 
         commentRepository.update(comment);
     }
