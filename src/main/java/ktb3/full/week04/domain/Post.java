@@ -64,6 +64,10 @@ public class Post extends Auditing {
         this.commentCount++;
     }
 
+    public void decreaseCommentCount() {
+        this.commentCount--;
+    }
+
     public void increaseViewCount() {
         this.viewCount++;
     }
