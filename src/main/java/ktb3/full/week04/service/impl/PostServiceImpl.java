@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +29,8 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserService userService;
+
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public PageResponse<PostResponse> getAllPosts(PageRequest pageRequest) {
@@ -38,8 +42,15 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDetailResponse getPost(long userId, long postId) {
-        Post post = getOrThrow(postId);
-        post.increaseViewCount();
+        Post post;
+        lock.lock();
+        try {
+            post = getOrThrow(postId);
+            post.increaseViewCount();
+        } finally {
+            lock.unlock();
+        }
+
         boolean liked = postLikeRepository.existsAndLiked(userId, postId);
 
         return PostDetailResponse.from(post, liked);
@@ -90,13 +101,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostLikeRespnose createOrUpdateLiked(long userId, long postId) {
+        PostLike postLike;
         User user = userService.getOrThrow(userId);
         Post post = getOrThrow(postId);
-        PostLike postLike = postLikeRepository.findByUserAndPostId(userId, postId)
-                .orElse(PostLike.create(user, post));
-        postLike.toggle();
 
-        postLikeRepository.saveOrUpdate(postLike);
+        lock.lock();
+        try {
+            postLike = postLikeRepository.findByUserAndPostId(userId, postId)
+                    .orElse(PostLike.create(user, post));
+            postLike.toggle();
+            postLikeRepository.saveOrUpdate(postLike);
+        } finally {
+            lock.unlock();
+        }
 
         return new PostLikeRespnose(postLike.isLiked());
     }
