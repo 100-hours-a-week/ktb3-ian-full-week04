@@ -16,15 +16,15 @@ public class PageResponse<T> {
     private final int size;
     private final int numberOfElements;
     private final int totalPages;
-    private final int totalElements;
+    private final long totalElements;
 
-    public static <T> PageResponse<T> of(List<T> content, PageRequest pageRequest, int totalElements) {
+    public static <T> PageResponse<T> of(List<T> content, PageRequest pageRequest, long totalElements) {
         return PageResponse.<T>builder()
                 .content(content)
                 .number(pageRequest.getNumber())
                 .size(pageRequest.getSize())
                 .numberOfElements(content.size())
-                .totalPages(Math.ceilDiv(totalElements, pageRequest.getSize()))
+                .totalPages((int) Math.ceilDiv(totalElements, pageRequest.getSize()))
                 .totalElements(totalElements)
                 .build();
     }

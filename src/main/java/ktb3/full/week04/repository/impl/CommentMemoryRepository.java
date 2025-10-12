@@ -22,6 +22,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
     private final Map<Long, Comment> idToComment = new ConcurrentHashMap<>();
     private final Map<Long, List<Long>> postIdToLatestComments = new ConcurrentHashMap<>();
+    private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();
 
     private final Lock commentLock = new ReentrantLock();
 
@@ -37,8 +38,10 @@ public class CommentMemoryRepository implements CommentRepository {
             commentLock.lock();
             if (!postIdToLatestComments.containsKey(postId)) {
                 postIdToLatestComments.put(postId, new ArrayList<>());
+                postIdToActiveCommentCounter.put(postId, new AtomicLong());
             }
             postIdToLatestComments.get(postId).add(commentId);
+            postIdToActiveCommentCounter.get(postId).getAndIncrement();
         } finally {
             commentLock.unlock();
         }
@@ -60,6 +63,9 @@ public class CommentMemoryRepository implements CommentRepository {
     @Override
     public void update(Comment comment) {
         idToComment.put(comment.getCommentId(), comment);
+        if (comment.isDeleted()) {
+            postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
+        }
     }
 
     @Override
@@ -69,6 +75,7 @@ public class CommentMemoryRepository implements CommentRepository {
         try {
             commentLock.lock();
             postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
+            postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
         } finally {
             commentLock.unlock();
         }
@@ -83,14 +90,22 @@ public class CommentMemoryRepository implements CommentRepository {
         }
 
         int start = ids.size() - getOffset(pageRequest) - 1;
-        int end = Math.max(start - pageRequest.getSize() + 1, 0);
 
         List<Comment> content = new ArrayList<>();
-        for (int i = start; i >= end; i--) {
-            content.add(idToComment.get(ids.get(i)));
+        int count = 0;
+        int curr = start;
+        while (count < pageRequest.getSize() && curr >= 0) {
+            Comment comment = idToComment.get(ids.get(curr--));
+
+            if (comment.isDeleted()) {
+                continue;
+            }
+
+            content.add(comment);
+            count++;
         }
 
-        return PageResponse.of(content, pageRequest, ids.size());
+        return PageResponse.of(content, pageRequest, postIdToActiveCommentCounter.get(postId).get());
     }
 
     public List<Comment> findAllByPostId(long postId) {
