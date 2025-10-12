@@ -28,19 +28,20 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public Long save(Comment comment) {
-        long commentId = commentIdCounter.getAndIncrement();
-        comment.save(commentId);
-
-        if (comment.getCreatedAt() == null) {
-            comment.auditCreate();
-        }
-
-        idToComment.put(commentId, comment);
-
-        long postId = comment.getPost().getPostId();
+        long commentId;
 
         try {
             commentLock.lock();
+            commentId = commentIdCounter.getAndIncrement();
+            comment.save(commentId);
+
+            if (comment.getCreatedAt() == null) {
+                comment.auditCreate();
+            }
+
+            idToComment.put(commentId, comment);
+
+            long postId = comment.getPost().getPostId();
             if (!postIdToLatestComments.containsKey(postId)) {
                 postIdToLatestComments.put(postId, new ArrayList<>());
                 postIdToActiveCommentCounter.put(postId, new AtomicLong());
