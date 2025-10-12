@@ -4,6 +4,8 @@ import ktb3.full.week04.domain.User;
 import ktb3.full.week04.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,6 +66,10 @@ public class UserMemoryRepository implements UserRepository {
     @Override
     public void delete(User user) {
         table.remove(user.getUserId());
+    }
+
+    public List<User> findAll() {
+        return new ArrayList<>(table.values());
     }
 
     private Optional<User> validateExists(User user) {
