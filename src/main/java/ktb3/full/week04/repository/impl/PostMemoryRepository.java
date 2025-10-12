@@ -52,6 +52,11 @@ public class PostMemoryRepository implements PostRepository {
     public Long save(Post post) {
         long postId = postIdCounter.getAndIncrement();
         post.save(postId);
+
+        if (post.getCreatedAt() == null) {
+            post.auditCreate();
+        }
+
         idToPost.put(postId, post);
         activePostCounter.getAndIncrement();
 
@@ -65,10 +70,14 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-        idToPost.put(post.getPostId(), post);
         if (post.isDeleted()) {
+            post.auditDelete();
             activePostCounter.getAndDecrement();
+        } else {
+            post.auditUpdate();
         }
+
+        idToPost.put(post.getPostId(), post);
     }
 
     @Override

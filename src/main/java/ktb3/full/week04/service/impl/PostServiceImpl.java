@@ -83,7 +83,6 @@ public class PostServiceImpl implements PostService {
         // soft delete
         Post post = getOrThrow(postId);
         userService.validatePermission(userId, post.getUser().getUserId());
-        post.delete();
 
         postRepository.update(post);
     }

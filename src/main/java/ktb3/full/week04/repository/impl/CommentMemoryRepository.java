@@ -30,6 +30,11 @@ public class CommentMemoryRepository implements CommentRepository {
     public Long save(Comment comment) {
         long commentId = commentIdCounter.getAndIncrement();
         comment.save(commentId);
+
+        if (comment.getCreatedAt() == null) {
+            comment.auditCreate();
+        }
+
         idToComment.put(commentId, comment);
 
         long postId = comment.getPost().getPostId();
@@ -62,10 +67,14 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public void update(Comment comment) {
-        idToComment.put(comment.getCommentId(), comment);
         if (comment.isDeleted()) {
             postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
+            comment.auditDelete();
+        } else {
+            comment.auditUpdate();
         }
+
+        idToComment.put(comment.getCommentId(), comment);
     }
 
     @Override

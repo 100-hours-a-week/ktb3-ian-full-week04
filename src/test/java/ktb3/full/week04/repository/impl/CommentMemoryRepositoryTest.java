@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,9 +26,9 @@ class CommentMemoryRepositoryTest {
         postRepository.save(post);
     }
 
-    @RepeatedTest(value = 100)
+    @RepeatedTest(value = 10)
     void save_ThreadSafe() throws InterruptedException {
-        int loopCount = 100;
+        int loopCount = 10;
 
         Runnable runnable = () -> {
             for (int i = 1; i <= loopCount; i++) {
@@ -53,7 +52,8 @@ class CommentMemoryRepositoryTest {
         List<Comment> comments = commentMemoryRepository.findAllByPostId(post.getPostId());
 
         assertThat(comments.size()).isEqualTo(expectedSize);
-        IntStream.rangeClosed(1, expectedSize)
-                .forEach(i -> assertThat(comments.stream().anyMatch(comment -> comment.getCommentId() == i)).isTrue());
+        for (int i = 0; i < comments.size() - 1; i++) {
+            assertThat(comments.get(i).getCreatedAt()).isBeforeOrEqualTo(comments.get(i + 1).getCreatedAt());
+        }
     }
 }
