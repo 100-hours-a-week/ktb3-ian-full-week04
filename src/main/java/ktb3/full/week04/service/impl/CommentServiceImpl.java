@@ -72,6 +72,7 @@ public class CommentServiceImpl implements CommentService {
         // soft delete
         Comment comment = getOrThrow(commentId);
         userService.validatePermission(userId, comment.getUser().getUserId());
+        comment.delete();
         comment.getPost().decreaseCommentCount();
 
         commentRepository.update(comment);

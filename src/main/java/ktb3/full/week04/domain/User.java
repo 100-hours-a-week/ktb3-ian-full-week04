@@ -44,4 +44,8 @@ public class User extends Auditing {
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

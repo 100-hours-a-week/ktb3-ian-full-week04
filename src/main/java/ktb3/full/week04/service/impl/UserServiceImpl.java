@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService {
     public void deleteAccount(long userId) {
         // soft delete
         User user = getOrThrow(userId);
+        user.delete();
 
         userRepository.update(user);
     }
