@@ -67,8 +67,4 @@ public class Post extends Auditing {
     public void increaseViewCount() {
         this.viewCount++;
     }
-
-    public void delete() {
-        this.auditDelete();
-    }
 }

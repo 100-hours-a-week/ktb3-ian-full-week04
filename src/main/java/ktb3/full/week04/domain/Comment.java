@@ -31,10 +31,5 @@ public class Comment extends Auditing {
 
     public void updateContent(String content) {
         this.content = content;
-        this.auditUpdate();
-    }
-
-    public void delete() {
-        this.auditDelete();
     }
 }

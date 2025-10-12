@@ -33,6 +33,10 @@ public class UserMemoryRepository implements UserRepository {
         long userId = userIdCounter.getAndIncrement();
         user.save(userId);
 
+        if (user.getCreatedAt() == null) {
+            user.auditCreate();
+        }
+
         idToUser.put(userId, user);
         emailToId.put(user.getEmail(), userId);
         nicknameToId.put(user.getNickname(), userId);
@@ -65,6 +69,7 @@ public class UserMemoryRepository implements UserRepository {
     @Override
     public void update(User user) {
         User existing = idToUser.get(user.getUserId());
+        user.auditUpdate();
         idToUser.put(user.getUserId(), user);
 
         if (!existing.getNickname().equals(user.getNickname())) {

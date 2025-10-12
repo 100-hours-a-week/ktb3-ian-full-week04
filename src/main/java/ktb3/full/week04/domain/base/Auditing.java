@@ -9,14 +9,13 @@ import java.util.Optional;
 public abstract class Auditing {
 
     private boolean isDeleted;
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    protected Auditing() {
-        this.isDeleted = false;
+    public void auditCreate() {
         this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.auditUpdate();
     }
 
     public void auditUpdate() {
@@ -25,8 +24,8 @@ public abstract class Auditing {
 
     public void auditDelete() {
         this.isDeleted = true;
-        this.updatedAt = LocalDateTime.now();
         this.deletedAt = LocalDateTime.now();
+        this.auditUpdate();
     }
 
     public static <T extends Auditing> Optional<T> validateExists(T entity) {
