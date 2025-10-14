@@ -8,6 +8,7 @@ import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
+import ktb3.full.week04.presentation.api.AuthenticatedUserApi;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @RestController
-public class AuthenticatedUserApiController {
+public class AuthenticatedUserApiController implements AuthenticatedUserApi {
 
     private final UserService userService;
 
