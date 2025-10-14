@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Schema(description = "페이징 요청 쿼리 파라미터")
+@Schema(title = "페이징 요청 쿼리 파라미터")
 @Getter
 @RequiredArgsConstructor
 public class PageRequest {

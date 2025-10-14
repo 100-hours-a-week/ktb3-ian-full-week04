@@ -5,7 +5,7 @@ import ktb3.full.week04.domain.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Schema(description = "회원 응답 DTO")
+@Schema(title = "회원 응답 DTO")
 @Getter
 @RequiredArgsConstructor
 public class UserProfileResponse {

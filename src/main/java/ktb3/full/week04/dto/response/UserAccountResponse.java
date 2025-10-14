@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "회원 정보 응답 DTO")
+@Schema(title = "회원 정보 응답 DTO")
 @Getter
 @RequiredArgsConstructor
 public class UserAccountResponse {

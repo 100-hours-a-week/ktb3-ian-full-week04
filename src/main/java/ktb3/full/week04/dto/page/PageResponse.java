@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@Schema(description = "페이징 응답")
+@Schema(title = "페이징 응답")
 @Getter
 @Builder(toBuilder = true)
 @RequiredArgsConstructor

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "게시글 상세 정보 응답 DTO")
+@Schema(title = "게시글 상세 정보 응답 DTO")
 @Getter
 @Builder
 @RequiredArgsConstructor

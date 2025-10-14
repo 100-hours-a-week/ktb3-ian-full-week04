@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import static ktb3.full.week04.common.Constants.MESSAGE_NOT_NULL_POST_CONTENT;
 import static ktb3.full.week04.common.Constants.MESSAGE_NOT_NULL_POST_TITLE;
 
-@Schema(description = "게시글 생성 요청 DTO")
+@Schema(title = "게시글 생성 요청 DTO")
 @Getter
 @RequiredArgsConstructor
 public class PostCreateRequest {

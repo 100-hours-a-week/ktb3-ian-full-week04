@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import static ktb3.full.week04.common.Constants.MESSAGE_NOT_NULL_COMMENT_CONTENT;
 
-@Schema(description = "댓글 생성 요청 DTO")
+@Schema(title = "댓글 생성 요청 DTO")
 @Getter
 @RequiredArgsConstructor
 public class CommentCreateRequest {

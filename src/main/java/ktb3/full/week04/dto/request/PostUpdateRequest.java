@@ -6,7 +6,7 @@ import ktb3.full.week04.common.annotation.constraint.PostTitlePattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Schema(description = "게시글 수정 요청 DTO")
+@Schema(title = "게시글 수정 요청 DTO")
 @Getter
 @RequiredArgsConstructor
 public class PostUpdateRequest {

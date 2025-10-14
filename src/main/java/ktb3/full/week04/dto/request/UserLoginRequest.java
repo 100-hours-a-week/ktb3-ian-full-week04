@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import static ktb3.full.week04.common.Constants.MESSAGE_NOT_NULL_EMAIL;
 import static ktb3.full.week04.common.Constants.MESSAGE_NOT_NULL_PASSWORD;
 
-@Schema(description = "회원 로그인 요청 DTO")
+@Schema(title = "회원 로그인 요청 DTO")
 @Getter
 @RequiredArgsConstructor
 public class UserLoginRequest {
