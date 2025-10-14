@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
-import ktb3.full.week04.dto.response.ApiResponse;
+import ktb3.full.week04.dto.response.ApiSuccessResponse;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import ktb3.full.week04.presentation.api.AuthenticatedUserApi;
@@ -22,42 +22,42 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser) {
+    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser) {
         UserAccountResponse userAccountResponse = userService.getUserAccount(loggedInUser.getUserId());
         return ResponseEntity.ok()
-                .body(ApiResponse.of(userAccountResponse));
+                .body(ApiSuccessResponse.of(userAccountResponse));
     }
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<UserAccountResponse>> updateUserAccount(
+    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest) {
         UserAccountResponse userAccountResponse = userService.updateAccount(loggedInUser.getUserId(), userAccountUpdateRequest);
         return ResponseEntity.ok()
-                .body(ApiResponse.of(userAccountResponse));
+                .body(ApiSuccessResponse.of(userAccountResponse));
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<ApiResponse<Void>> updatePassword(
+    public ResponseEntity<ApiSuccessResponse<Void>> updatePassword(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
         userService.updatePassword(loggedInUser.getUserId(), userPasswordUpdateRequest);
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiSuccessResponse.getBaseResponse());
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpSession session) {
+    public ResponseEntity<ApiSuccessResponse<Void>> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiSuccessResponse.getBaseResponse());
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session) {
+    public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session) {
         userService.deleteAccount(loggedInUser.getUserId());
         session.invalidate();
         return ResponseEntity.ok()
-                .body(ApiResponse.getBaseResponse());
+                .body(ApiSuccessResponse.getBaseResponse());
     }
 }

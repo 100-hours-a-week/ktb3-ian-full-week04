@@ -1,6 +1,7 @@
 package ktb3.full.week04.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
@@ -8,7 +9,7 @@ import jakarta.validation.Valid;
 import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserPasswordUpdateRequest;
-import ktb3.full.week04.dto.response.ApiResponse;
+import ktb3.full.week04.dto.response.ApiSuccessResponse;
 import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
 import org.springframework.http.ResponseEntity;
@@ -19,35 +20,35 @@ public interface AuthenticatedUserApi {
 
     @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<ApiResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser);
+    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser);
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "수정 성공")
+            @ApiResponse(responseCode = "200", description = "수정 성공")
     })
-    ResponseEntity<ApiResponse<UserAccountResponse>> updateUserAccount(
+    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest);
 
     @Operation(summary = "회원 비밀번호 수정", description = "회원의 비밀번호를 수정합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "수정 성공")
+            @ApiResponse(responseCode = "200", description = "수정 성공")
     })
-    ResponseEntity<ApiResponse<Void>> updatePassword(
+    ResponseEntity<ApiSuccessResponse<Void>> updatePassword(
             @Authentication LoggedInUser loggedInUser,
             @Valid @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest);
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "요청 성공")
+            @ApiResponse(responseCode = "200", description = "요청 성공")
     })
-    ResponseEntity<ApiResponse<Void>> logout(HttpSession session);
+    ResponseEntity<ApiSuccessResponse<Void>> logout(HttpSession session);
 
     @Operation(summary = "회원 탈퇴", description = "회원을 삭제합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "삭제 성공")
+            @ApiResponse(responseCode = "200", description = "삭제 성공")
     })
-    ResponseEntity<ApiResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session);
+    ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session);
 }
