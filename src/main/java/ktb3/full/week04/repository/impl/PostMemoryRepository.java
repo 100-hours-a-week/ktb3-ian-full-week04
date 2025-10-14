@@ -28,12 +28,13 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public PageResponse<Post> findAllByLatest(PageRequest pageRequest) {
-        int start = latest.size() - getOffset(pageRequest);
+        int start = latest.size() - getOffset(pageRequest) - 1;
 
         List<Post> content = new ArrayList<>();
         int count = 0;
         int curr = start;
-        while (count < pageRequest.getSize() && curr >= 1) {
+        while (count < pageRequest.getSize() && curr >= 0) {
+            System.out.println(latest.size() + " " + curr);
             Post post = idToPost.get(latest.get(curr--));
 
             if (post.isDeleted()) {
