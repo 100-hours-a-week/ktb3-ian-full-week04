@@ -1,6 +1,7 @@
 package ktb3.full.week04.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,13 +26,14 @@ public interface CommentApi {
     })
     ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getAllComments(
             @Valid PageRequest pageRequest,
-            @Positive @PathVariable("postId") long postId);
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
     @Operation(summary = "댓글 상세 조회", description = "ID를 이용해 특정 댓글을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<ApiResponse<CommentResponse>> getComment(@Positive @PathVariable("commentId") long commentId);
+    ResponseEntity<ApiResponse<CommentResponse>> getComment(
+            @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId);
 
     @Operation(summary = "댓글 생성", description = "새로운 댓글을 생성합니다.")
     @ApiResponses(value = {
@@ -39,7 +41,7 @@ public interface CommentApi {
     })
     ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("postId") long postId,
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId,
             @Valid @RequestBody CommentCreateRequest request);
 
     @Operation(summary = "댓글 수정", description = "ID를 이용해 댓글을 수정합니다.")
@@ -48,7 +50,7 @@ public interface CommentApi {
     })
     ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("commentId") long commentId,
+            @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId,
             @Valid @RequestBody CommentUpdateRequest request);
 
     @Operation(summary = "댓글 삭제", description = "ID를 이용해 댓글을 삭제합니다.")
@@ -57,5 +59,5 @@ public interface CommentApi {
     })
     ResponseEntity<ApiResponse<Void>> deleteComment(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("commentId") long commentId);
+            @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId);
 }
