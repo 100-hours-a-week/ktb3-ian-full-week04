@@ -1,6 +1,7 @@
 package ktb3.full.week04.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +32,7 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<PostDetailResponse>> getPostDetail(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("postId") long postId);
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
     @ApiResponses(value = {
@@ -47,7 +48,7 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<PostDetailResponse>> updatePost(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("postId") long postId,
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId,
             @Valid @RequestBody PostUpdateRequest request);
 
     @Operation(summary = "게시글 삭제", description = "ID를 이용해 게시글을 삭제합니다.")
@@ -56,7 +57,7 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<Void>> deletePost(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("postId") long postId);
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
     @Operation(summary = "좋아요", description = "좋아요를 누르거나 취소합니다.")
     @ApiResponses(value = {
@@ -64,5 +65,5 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<PostLikeRespnose>> likePost(
             @Authentication LoggedInUser loggedInUser,
-            @Positive @PathVariable("postId") long postId);
+            @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 }
