@@ -12,6 +12,7 @@ import ktb3.full.week04.dto.response.UserAccountResponse;
 import ktb3.full.week04.dto.response.UserProfileResponse;
 import ktb3.full.week04.dto.response.UserValidationResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
+import ktb3.full.week04.presentation.api.UserApi;
 import ktb3.full.week04.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import static ktb3.full.week04.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController
-public class UserApiController {
+public class UserApiController implements UserApi {
 
     private final UserService userService;
 
