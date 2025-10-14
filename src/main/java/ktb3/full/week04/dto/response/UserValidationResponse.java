@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Schema(description = "회원 중복 검사 응답 DTO")
+@Schema(title = "회원 중복 검사 응답 DTO")
 @Getter
 @RequiredArgsConstructor
 public class UserValidationResponse {

@@ -12,7 +12,7 @@ import lombok.ToString;
 
 import static ktb3.full.week04.common.Constants.*;
 
-@Schema(description = "회원 등록 요청 DTO")
+@Schema(title = "회원 등록 요청 DTO")
 @ToString
 @Getter
 @RequiredArgsConstructor

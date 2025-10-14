@@ -1,5 +1,6 @@
 package ktb3.full.week04.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import ktb3.full.week04.common.exception.ApiErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Schema(title = "API 에러 공통 응답")
 @Getter
 public class ApiErrorResponse {
 
@@ -40,6 +42,7 @@ public class ApiErrorResponse {
         return new ApiErrorResponse(apiErrorCode, null, FieldError.ofList(bindingResult), path);
     }
 
+    @Schema(title = "API 필드 에러 응답")
     @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class FieldError {

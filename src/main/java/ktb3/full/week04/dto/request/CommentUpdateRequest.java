@@ -5,7 +5,7 @@ import ktb3.full.week04.common.annotation.constraint.CommentContentPattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Schema(description = "댓글 수정 요청 DTO")
+@Schema(title = "댓글 수정 요청 DTO")
 @Getter
 @RequiredArgsConstructor
 public class CommentUpdateRequest {

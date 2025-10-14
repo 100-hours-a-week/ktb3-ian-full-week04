@@ -2,6 +2,7 @@ package ktb3.full.week04.dto.response;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import ktb3.full.week04.domain.Comment;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "댓글 응답 DTO")
+@Schema(title = "댓글 응답 DTO")
 @Getter
 @Builder
 @RequiredArgsConstructor
