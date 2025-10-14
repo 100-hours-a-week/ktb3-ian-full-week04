@@ -12,6 +12,7 @@ import ktb3.full.week04.dto.response.PostDetailResponse;
 import ktb3.full.week04.dto.response.PostLikeRespnose;
 import ktb3.full.week04.dto.response.PostResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
+import ktb3.full.week04.presentation.api.PostApi;
 import ktb3.full.week04.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RequestMapping("/posts")
 @RestController
-public class PostApiController {
+public class PostApiController implements PostApi {
 
     private final PostService postService;
 
