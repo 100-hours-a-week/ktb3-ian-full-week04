@@ -14,11 +14,22 @@ import java.util.List;
 @Getter
 public class ApiErrorResponse {
 
+    @Schema(description = "에러 코드")
     private final String code;
+
+    @Schema(description = "에러 메시지")
     private final String message;
+
+    @Schema(description = "에러 상세 메시지")
     private final String detail;
+
+    @Schema(description = "필드 에러 메시지")
     private final List<FieldError> fieldErrors;
+
+    @Schema(description = "응답 시각")
     private final LocalDateTime timestamp;
+
+    @Schema(description = "요청 경로")
     private final String path;
 
     private ApiErrorResponse(ApiErrorCode apiErrorCode, String detail, List<FieldError> fieldErrors, String path) {
