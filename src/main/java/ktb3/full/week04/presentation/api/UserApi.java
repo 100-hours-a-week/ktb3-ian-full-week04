@@ -2,6 +2,7 @@ package ktb3.full.week04.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
@@ -22,35 +23,35 @@ public interface UserApi {
 
     @Operation(summary = "이메일 중복 검사", description = "이메일이 중복되는지 검사합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(
+    ResponseEntity<ApiSuccessResponse<UserValidationResponse>> validateEmailAvailable(
             @EmailPattern @RequestParam("email") @Parameter(description = "이메일") String email);
 
 
     @Operation(summary = "닉네임 중복 검사", description = "닉네임이 중복되는지 검사합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(
+    ResponseEntity<ApiSuccessResponse<UserValidationResponse>> validateNicknameAvailable(
             @NicknamePattern @RequestParam("nickname") @Parameter(description = "닉네임") String nickname);
 
     @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "생성 성공")
+            @ApiResponse(responseCode = "200", description = "생성 성공")
     })
-    ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest);
+    ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest);
 
     @Operation(summary = "로그인", description = "회원의 이메일과 비밀번호를 인증합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "요청 성공")
+            @ApiResponse(responseCode = "200", description = "요청 성공")
     })
-    ResponseEntity<ApiResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session);
+    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session);
 
     @Operation(summary = "회원 조회", description = "ID를 이용해 특정 회원을 조회합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(
+    ResponseEntity<ApiSuccessResponse<UserProfileResponse>> getUserProfile(
             @Positive @PathVariable("userId") @Parameter(description = "회원 ID") long userId);
 }
