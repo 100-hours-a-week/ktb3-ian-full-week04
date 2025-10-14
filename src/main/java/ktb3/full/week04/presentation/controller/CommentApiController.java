@@ -10,6 +10,7 @@ import ktb3.full.week04.dto.request.CommentUpdateRequest;
 import ktb3.full.week04.dto.response.ApiResponse;
 import ktb3.full.week04.dto.response.CommentResponse;
 import ktb3.full.week04.dto.session.LoggedInUser;
+import ktb3.full.week04.presentation.api.CommentApi;
 import ktb3.full.week04.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import java.net.URI;
 @Validated
 @RequiredArgsConstructor
 @RestController
-public class CommentApiController {
+public class CommentApiController implements CommentApi {
 
     private final CommentService commentService;
 
@@ -52,7 +53,7 @@ public class CommentApiController {
     }
 
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> updatePost(
+    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("commentId") long commentId,
             @Valid @RequestBody CommentUpdateRequest request) {
@@ -62,7 +63,7 @@ public class CommentApiController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(
+    public ResponseEntity<ApiResponse<Void>> deleteComment(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("commentId") long commentId) {
         commentService.deleteComment(loggedInUser.getUserId(), commentId);
