@@ -11,14 +11,24 @@ public class SortUtil {
     public static <T, R extends Comparable<R>> Comparator<T> getComparator(Sort sort) {
         return Comparator.comparing(t -> {
             try {
-                Field field = t.getClass().getDeclaredField(sort.getProperty());
+                Field field = getFieldRecursively(t.getClass(), sort.getProperty());
                 field.setAccessible(true);
                 return (R) field.get(t);
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException(String.format("필드 %s가 존재하지 않습니다.", sort.getProperty()));
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(String.format("필드 %s에 접근할 수 없습니다.", sort.getProperty()));
             }
         });
+    }
+
+    private static Field getFieldRecursively(Class<?> clazz, String fieldName) {
+        Class<?> current = clazz;
+        while (current != null) {
+            try {
+                return current.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                current = current.getSuperclass();
+            }
+        }
+        throw new IllegalStateException(String.format("필드 %s가 존재하지 않습니다.", fieldName));
     }
 }
