@@ -1,15 +1,14 @@
 package ktb3.full.week04.domain;
 
 import ktb3.full.week04.domain.base.Auditing;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import ktb3.full.week04.domain.base.Deletable;
+import lombok.*;
 
+@ToString
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Comment extends Auditing {
+public class Comment extends Auditing implements Deletable {
 
     private Long commentId;
     private final User user;
