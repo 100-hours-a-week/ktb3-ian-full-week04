@@ -1,5 +1,6 @@
 package ktb3.full.week04.util;
 
+import ktb3.full.week04.common.exception.InvalidSortPropertyException;
 import ktb3.full.week04.dto.page.Sort;
 
 import java.lang.reflect.Field;
@@ -29,6 +30,6 @@ public class SortUtil {
                 current = current.getSuperclass();
             }
         }
-        throw new IllegalStateException(String.format("필드 %s가 존재하지 않습니다.", fieldName));
+        throw new InvalidSortPropertyException();
     }
 }

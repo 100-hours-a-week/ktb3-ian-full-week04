@@ -13,6 +13,7 @@ public enum ApiErrorCode {
     MISSING_SERVLET_REQUEST_PARAMETER("4003", "필수 요청 파라미터가 누락되었습니다."),
     METHOD_ARGUMENT_TYPE_MISMATCH("4004", "요청 파라미터의 타입이 올바르지 않습니다."),
     CONSTRAINT_VIOLATION("4005", "요청 파라미터의 값이 올바르지 않습니다."),
+    INVALID_SORT_PROPERTY("4006", "정렬 기준이 올바르지 않습니다."),
 
     // 401 Unauthorized
     INVALID_CREDENTIALS("4011", "아이디 또는 비밀번호가 틀렸습니다."),
