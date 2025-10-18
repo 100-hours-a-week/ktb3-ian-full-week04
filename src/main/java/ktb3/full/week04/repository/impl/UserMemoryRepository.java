@@ -2,7 +2,7 @@ package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.domain.base.Deletable;
-import ktb3.full.week04.infrastructure.database.table.Table;
+import ktb3.full.week04.infrastructure.database.table.AuditingTable;
 import ktb3.full.week04.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public class UserMemoryRepository implements UserRepository {
 
-    private final Table<User, Long> table;
+    private final AuditingTable<User, Long> table;
 
     @Override
     public boolean existsByEmail(String email) {
@@ -31,9 +31,7 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public Long save(User user) {
-        Long userId = table.insert(user);
-        user.auditCreate();
-        return userId;
+        return table.insert(user);
     }
 
     @Override
@@ -56,7 +54,7 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public void update(User user) {
-        user.auditUpdate();
+        table.update(user.getUserId(), user);
     }
 
     @Override
