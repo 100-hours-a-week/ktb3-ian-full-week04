@@ -5,7 +5,7 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.page.Sort;
-import ktb3.full.week04.infrastructure.database.table.Table;
+import ktb3.full.week04.infrastructure.database.table.AuditingTable;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.util.PageUtil;
 import ktb3.full.week04.util.SortUtil;
@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Repository
 public class PostMemoryRepository implements PostRepository {
 
-    private final Table<Post, Long> table;
+    private final AuditingTable<Post, Long> table;
 
     private final AtomicLong activePostCounter = new AtomicLong(0L);
 
@@ -40,7 +40,6 @@ public class PostMemoryRepository implements PostRepository {
         try {
             lock.lock();
             postId = table.insert(post);
-            post.auditCreate();
             activePostCounter.getAndIncrement();
         } finally {
             lock.unlock();
@@ -59,7 +58,7 @@ public class PostMemoryRepository implements PostRepository {
         if (post.isDeleted()) {
             activePostCounter.getAndDecrement();
         }
-        post.auditUpdate();
+        table.update(post.getPostId(), post);
     }
 
     @Override
