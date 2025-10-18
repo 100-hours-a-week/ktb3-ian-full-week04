@@ -4,7 +4,7 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
-import ktb3.full.week04.infrastructure.database.table.Table;
+import ktb3.full.week04.infrastructure.database.table.AuditingTable;
 import ktb3.full.week04.repository.CommentRepository;
 import ktb3.full.week04.util.PageUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
 
-    private final Table<Comment, Long> table;
+    private final AuditingTable<Comment, Long> table;
 
     private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
     private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();
@@ -37,7 +37,6 @@ public class CommentMemoryRepository implements CommentRepository {
         try {
             commentLock.lock();
             commentId = table.insert(comment);
-            comment.auditCreate();
 
             long postId = comment.getPost().getPostId();
             if (!postIdToCommentIds.containsKey(postId)) {
@@ -68,7 +67,7 @@ public class CommentMemoryRepository implements CommentRepository {
         if (comment.isDeleted()) {
             postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
         }
-        comment.auditUpdate();
+        table.update(comment.getCommentId(), comment);
     }
 
     @Override
