@@ -5,7 +5,7 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.page.Sort;
-import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.infrastructure.database.table.PostTable;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.util.PageUtil;
 import ktb3.full.week04.util.SortUtil;
@@ -14,19 +14,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 @Repository
 public class PostMemoryRepository implements PostRepository {
 
-    private final AuditingTable<Post, Long> table;
-
-    private final AtomicLong activePostCounter = new AtomicLong(0L);
-
-    private final Lock lock = new ReentrantLock();
+    private final PostTable table;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -35,17 +28,7 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public Long save(Post post) {
-        long postId;
-
-        try {
-            lock.lock();
-            postId = table.insert(post);
-            activePostCounter.getAndIncrement();
-        } finally {
-            lock.unlock();
-        }
-
-        return postId;
+        return table.insert(post);
     }
 
     @Override
@@ -55,16 +38,12 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-        if (post.isDeleted()) {
-            activePostCounter.getAndDecrement();
-        }
         table.update(post.getPostId(), post);
     }
 
     @Override
     public void delete(Post post) {
         table.delete(post.getPostId());
-        activePostCounter.getAndDecrement();
     }
 
     @Override
@@ -78,6 +57,6 @@ public class PostMemoryRepository implements PostRepository {
             sortedList = sortedList.reversed();
         }
 
-        return PageResponse.of(PageUtil.paging(table, sortedList, pageRequest), pageRequest, activePostCounter.get());
+        return PageResponse.of(PageUtil.paging(table, sortedList, pageRequest), pageRequest, table.getTotalActiveElements());
     }
 }
