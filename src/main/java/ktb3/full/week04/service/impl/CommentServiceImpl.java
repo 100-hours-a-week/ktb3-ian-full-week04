@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public PageResponse<CommentResponse> getAllComments(long postId, PageRequest pageRequest) {
-        PageResponse<Comment> commentsPageResponse = commentRepository.findAllByLatest(postId, pageRequest);
+        PageResponse<Comment> commentsPageResponse = commentRepository.findAll(postId, pageRequest);
         List<CommentResponse> responses = commentsPageResponse.getContent().stream().map(CommentResponse::from).toList();
 
         return PageResponse.to(commentsPageResponse, responses);
