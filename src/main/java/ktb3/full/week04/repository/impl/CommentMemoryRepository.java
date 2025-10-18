@@ -4,6 +4,7 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.CommentRepository;
+import ktb3.full.week04.util.PageUtil;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class CommentMemoryRepository implements CommentRepository {
 
     private final AtomicLong commentIdCounter = new AtomicLong(1L);
 
-    private final Map<Long, Comment> idToComment = new ConcurrentHashMap<>();
-    private final Map<Long, List<Long>> postIdToLatestComments = new ConcurrentHashMap<>();
+    private final Map<Long, Comment> table = new ConcurrentHashMap<>();
+    private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
     private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();
 
     private final Lock commentLock = new ReentrantLock();
@@ -39,14 +40,14 @@ public class CommentMemoryRepository implements CommentRepository {
                 comment.auditCreate();
             }
 
-            idToComment.put(commentId, comment);
+            table.put(commentId, comment);
 
             long postId = comment.getPost().getPostId();
-            if (!postIdToLatestComments.containsKey(postId)) {
-                postIdToLatestComments.put(postId, new ArrayList<>());
+            if (!postIdToCommentIds.containsKey(postId)) {
+                postIdToCommentIds.put(postId, new ArrayList<>());
                 postIdToActiveCommentCounter.put(postId, new AtomicLong());
             }
-            postIdToLatestComments.get(postId).add(commentId);
+            postIdToCommentIds.get(postId).add(commentId);
             postIdToActiveCommentCounter.get(postId).getAndIncrement();
         } finally {
             commentLock.unlock();
@@ -62,7 +63,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(Long commentId) {
-        return validateExists(idToComment.get(commentId));
+        return validateExists(table.get(commentId));
     }
 
     @Override
@@ -72,54 +73,40 @@ public class CommentMemoryRepository implements CommentRepository {
         }
 
         comment.auditUpdate();
-        idToComment.put(comment.getCommentId(), comment);
+        table.put(comment.getCommentId(), comment);
     }
 
     @Override
     public void delete(Comment comment) {
-        idToComment.remove(comment.getCommentId());
+        table.remove(comment.getCommentId());
 
         try {
             commentLock.lock();
-            postIdToLatestComments.get(comment.getPost().getPostId()).remove(comment.getCommentId());
+            postIdToCommentIds.get(comment.getPost().getPostId()).remove(comment.getCommentId());
             postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
         } finally {
             commentLock.unlock();
         }
     }
 
-    @Override
-    public PageResponse<Comment> findAllByLatest(long postId, PageRequest pageRequest) {
-        List<Long> ids = postIdToLatestComments.get(postId);
+    public List<Comment> findAllByPostId(long postId) {
+        List<Comment> comments = new ArrayList<>();
+        postIdToCommentIds.get(postId).forEach(commentId ->
+                comments.add(table.get(commentId)));
+        return comments;
+    }
 
-        if (ids == null) {
+    @Override
+    public PageResponse<Comment> findAll(long postId, PageRequest pageRequest) {
+        List<Long> commentIds = postIdToCommentIds.get(postId);
+
+        if (commentIds == null) {
             return PageResponse.of(new ArrayList<>(), pageRequest, 0);
         }
 
-        int start = ids.size() - getOffset(pageRequest) - 1;
+        commentIds = commentIds.reversed();
 
-        List<Comment> content = new ArrayList<>();
-        int count = 0;
-        int curr = start;
-        while (count < pageRequest.getSize() && curr >= 0) {
-            Comment comment = idToComment.get(ids.get(curr--));
-
-            if (comment.isDeleted()) {
-                continue;
-            }
-
-            content.add(comment);
-            count++;
-        }
-
-        return PageResponse.of(content, pageRequest, postIdToActiveCommentCounter.get(postId).get());
-    }
-
-    public List<Comment> findAllByPostId(long postId) {
-        List<Comment> comments = new ArrayList<>();
-        postIdToLatestComments.get(postId).forEach(commentId ->
-                comments.add(idToComment.get(commentId)));
-        return comments;
+        return PageResponse.of(PageUtil.paging(table, commentIds, pageRequest), pageRequest, postIdToActiveCommentCounter.get(postId).get());
     }
 
     private Optional<Comment> validateExists(Comment comment) {
