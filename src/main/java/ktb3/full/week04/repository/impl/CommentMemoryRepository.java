@@ -1,6 +1,7 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.Comment;
+import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.CommentRepository;
@@ -63,7 +64,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(Long commentId) {
-        return validateExists(table.get(commentId));
+        return Deletable.validateExists(table.get(commentId));
     }
 
     @Override
@@ -107,13 +108,5 @@ public class CommentMemoryRepository implements CommentRepository {
         commentIds = commentIds.reversed();
 
         return PageResponse.of(PageUtil.paging(table, commentIds, pageRequest), pageRequest, postIdToActiveCommentCounter.get(postId).get());
-    }
-
-    private Optional<Comment> validateExists(Comment comment) {
-        if (comment == null || comment.isDeleted()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(comment);
     }
 }

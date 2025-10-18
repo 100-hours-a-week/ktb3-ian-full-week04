@@ -1,6 +1,7 @@
 package ktb3.full.week04.domain;
 
 import ktb3.full.week04.domain.base.Auditing;
+import ktb3.full.week04.domain.base.Deletable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class User extends Auditing {
+public class User extends Auditing implements Deletable {
 
     private Long userId;
     private final String email;
