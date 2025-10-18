@@ -12,6 +12,8 @@ public abstract class Constants {
     public static final String MESSAGE_NOT_NULL_POST_TITLE = "제목을 입력해주세요.";
     public static final String MESSAGE_NOT_NULL_POST_CONTENT = "내용을 입력해주세요.";
     public static final String MESSAGE_NOT_NULL_COMMENT_CONTENT = "내용을 입력해주세요.";
+    public static final String MESSAGE_NOT_NULL_SORT_PROPERTY = "정렬 기준을 입력해주세요.";
+    public static final String MESSAGE_NOT_NULL_SORT_DIRECTION = "정렬 방향을 입력해주세요.";
 
     public static final String MESSAGE_EMAIL_PATTERN = "올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)";
     public static final String MESSAGE_NICKNAME_PATTERN = "올바른 닉네임 형식을 입력해주세요. (한글, 영어, 숫자만 포함하고 공백 없이 1~10자 사이여야 합니다.)";
