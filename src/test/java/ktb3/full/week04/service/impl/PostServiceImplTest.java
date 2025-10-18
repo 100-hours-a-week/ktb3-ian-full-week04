@@ -4,6 +4,7 @@ import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.infrastructure.database.table.PostTable;
 import ktb3.full.week04.infrastructure.database.table.Table;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
@@ -24,7 +25,7 @@ class PostServiceImplTest {
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
-    private final AuditingTable<Post, Long> postTable = new AuditingTable<>(postIdentifierGenerator);
+    private final PostTable postTable = new PostTable(postIdentifierGenerator);
     private final Table<PostLike, PostLikeMemoryRepository.UserAndPostId> postLikeTable = new Table<>(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);

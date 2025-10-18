@@ -4,6 +4,7 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.infrastructure.database.table.PostTable;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
 import ktb3.full.week04.infrastructure.database.identifier.LongIdentifierGenerator;
@@ -20,7 +21,7 @@ class CommentMemoryRepositoryTest {
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
     private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
-    private final AuditingTable<Post, Long> postTable = new AuditingTable<>(postIdentifierGenerator);
+    private final PostTable postTable = new PostTable(postIdentifierGenerator);
     private final AuditingTable<Comment, Long> commentTable = new AuditingTable<>(commentIdentifierGenerator);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
