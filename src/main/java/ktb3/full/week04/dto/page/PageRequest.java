@@ -1,7 +1,6 @@
 package ktb3.full.week04.dto.page;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,4 @@ public class PageRequest {
     @Schema(description = "요청 데이터 수", example = "5")
     @Positive
     private final int size;
-
-    @Valid
-    private final Sort sort;
 }
