@@ -1,6 +1,7 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.User;
+import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -47,12 +48,12 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long userId) {
-        return validateExists(table.get(userId));
+        return Deletable.validateExists(table.get(userId));
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return validateExists(table.values().stream()
+        return Deletable.validateExists(table.values().stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
                 .orElse(null));
@@ -70,13 +71,5 @@ public class UserMemoryRepository implements UserRepository {
 
     public List<User> findAll() {
         return new ArrayList<>(table.values());
-    }
-
-    private Optional<User> validateExists(User user) {
-        if (user == null || user.isDeleted()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(user);
     }
 }

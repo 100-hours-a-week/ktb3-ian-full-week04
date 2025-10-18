@@ -1,6 +1,7 @@
 package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.Post;
+import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.PostRepository;
@@ -29,7 +30,7 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long postId) {
-        return validateExists(table.get(postId));
+        return Deletable.validateExists(table.get(postId));
     }
 
     @Override
@@ -89,13 +90,5 @@ public class PostMemoryRepository implements PostRepository {
         }
 
         return PageResponse.of(PageUtil.paging(table, sortedList, pageRequest), pageRequest, activePostCounter.get());
-    }
-
-    private Optional<Post> validateExists(Post post) {
-        if (post == null || post.isDeleted()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(post);
     }
 }
