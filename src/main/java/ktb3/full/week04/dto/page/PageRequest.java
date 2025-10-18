@@ -17,4 +17,6 @@ public class PageRequest {
     @Schema(description = "요청 데이터 수", example = "5")
     @Positive
     private final int size;
+
+    private final Sort sort;
 }

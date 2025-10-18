@@ -4,9 +4,10 @@ import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.PostRepository;
+import ktb3.full.week04.util.PageUtil;
+import ktb3.full.week04.util.SortUtil;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,36 +22,14 @@ public class PostMemoryRepository implements PostRepository {
     private final AtomicLong postIdCounter = new AtomicLong(1L);
     private final AtomicLong activePostCounter = new AtomicLong(0L);
 
-    private final Map<Long, Post> idToPost = new ConcurrentHashMap<>();
-    private final List<Long> latest =  new ArrayList<>();
+    private final Map<Long, Post> table = new ConcurrentHashMap<>();
+    private final Map<String, List<Long>> ascSortedTable = new ConcurrentHashMap<>();
 
     private final Lock lock = new ReentrantLock();
 
     @Override
-    public PageResponse<Post> findAllByLatest(PageRequest pageRequest) {
-        int start = latest.size() - getOffset(pageRequest) - 1;
-
-        List<Post> content = new ArrayList<>();
-        int count = 0;
-        int curr = start;
-        while (count < pageRequest.getSize() && curr >= 0) {
-            System.out.println(latest.size() + " " + curr);
-            Post post = idToPost.get(latest.get(curr--));
-
-            if (post.isDeleted()) {
-                continue;
-            }
-
-            content.add(post);
-            count++;
-        }
-
-        return PageResponse.of(content, pageRequest, activePostCounter.get());
-    }
-
-    @Override
     public Optional<Post> findById(Long postId) {
-        return validateExists(idToPost.get(postId));
+        return validateExists(table.get(postId));
     }
 
     @Override
@@ -65,8 +44,7 @@ public class PostMemoryRepository implements PostRepository {
                 post.auditCreate();
             }
 
-            idToPost.put(postId, post);
-            latest.add(postId);
+            table.put(postId, post);
             activePostCounter.getAndIncrement();
         } finally {
             lock.unlock();
@@ -87,24 +65,30 @@ public class PostMemoryRepository implements PostRepository {
         }
 
         post.auditUpdate();
-        idToPost.put(post.getPostId(), post);
+        table.put(post.getPostId(), post);
     }
 
     @Override
     public void delete(Post post) {
-        idToPost.remove(post.getPostId());
+        table.remove(post.getPostId());
         activePostCounter.getAndDecrement();
-
-        try {
-            lock.lock();
-            latest.remove(post.getPostId());
-        } finally {
-            lock.unlock();
-        }
     }
 
-    public List<Post> findAll() {
-        return latest.stream().map(idToPost::get).toList();
+    @Override
+    public PageResponse<Post> findAll(PageRequest pageRequest) {
+        if (!ascSortedTable.containsKey(pageRequest.getSort().getProperty())) {
+            ascSortedTable.put(pageRequest.getSort().getProperty(), table.values().stream()
+                    .sorted(SortUtil.getComparator(pageRequest.getSort()))
+                    .map(Post::getPostId)
+                    .toList());
+        }
+
+        List<Long> sortedList = ascSortedTable.get(pageRequest.getSort().getProperty());
+        if (pageRequest.getSort().isDescending()) {
+            sortedList = sortedList.reversed();
+        }
+
+        return PageResponse.of(PageUtil.paging(table, sortedList, pageRequest), pageRequest, activePostCounter.get());
     }
 
     private Optional<Post> validateExists(Post post) {
