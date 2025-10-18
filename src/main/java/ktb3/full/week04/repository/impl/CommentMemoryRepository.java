@@ -4,8 +4,8 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
+import ktb3.full.week04.infrastructure.database.table.Table;
 import ktb3.full.week04.repository.CommentRepository;
-import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import ktb3.full.week04.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -23,9 +23,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
 
-    private final IdentifierGenerator<Comment, Long> identifierGenerator;
+    private final Table<Comment, Long> table;
 
-    private final Map<Long, Comment> table = new ConcurrentHashMap<>();
     private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
     private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();
 
@@ -37,13 +36,8 @@ public class CommentMemoryRepository implements CommentRepository {
 
         try {
             commentLock.lock();
-            commentId = identifierGenerator.generate(comment);
-
-            if (comment.getCreatedAt() == null) {
-                comment.auditCreate();
-            }
-
-            table.put(commentId, comment);
+            commentId = table.insert(comment);
+            comment.auditCreate();
 
             long postId = comment.getPost().getPostId();
             if (!postIdToCommentIds.containsKey(postId)) {
@@ -66,7 +60,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(Long commentId) {
-        return Deletable.validateExists(table.get(commentId));
+        return Deletable.validateExists(table.select(commentId));
     }
 
     @Override
@@ -74,14 +68,12 @@ public class CommentMemoryRepository implements CommentRepository {
         if (comment.isDeleted()) {
             postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
         }
-
         comment.auditUpdate();
-        table.put(comment.getCommentId(), comment);
     }
 
     @Override
     public void delete(Comment comment) {
-        table.remove(comment.getCommentId());
+        table.delete(comment.getCommentId());
 
         try {
             commentLock.lock();
@@ -95,7 +87,7 @@ public class CommentMemoryRepository implements CommentRepository {
     public List<Comment> findAllByPostId(long postId) {
         List<Comment> comments = new ArrayList<>();
         postIdToCommentIds.get(postId).forEach(commentId ->
-                comments.add(table.get(commentId)));
+                comments.add(table.select(commentId)));
         return comments;
     }
 
