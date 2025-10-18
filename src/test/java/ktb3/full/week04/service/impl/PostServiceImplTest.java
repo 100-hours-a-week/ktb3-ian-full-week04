@@ -1,7 +1,9 @@
 package ktb3.full.week04.service.impl;
 
 import ktb3.full.week04.domain.Post;
+import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
+import ktb3.full.week04.infrastructure.database.table.Table;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
@@ -20,9 +22,12 @@ class PostServiceImplTest {
 
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
-    private final UserRepository userRepository = new UserMemoryRepository(userIdentifierGenerator);
-    private final PostRepository postRepository = new PostMemoryRepository(postIdentifierGenerator);
-    private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository();
+    private final Table<User, Long> userTable = new Table<>(userIdentifierGenerator);
+    private final Table<Post, Long> postTable = new Table<>(postIdentifierGenerator);
+    private final Table<PostLike, PostLikeMemoryRepository.UserAndPostId> postLikeTable = new Table<>(null);
+    private final UserRepository userRepository = new UserMemoryRepository(userTable);
+    private final PostRepository postRepository = new PostMemoryRepository(postTable);
+    private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository(postLikeTable);
     private final UserService userService = new UserServiceImpl(userRepository);
     private final PostService postService = new PostServiceImpl(postRepository, postLikeRepository, userService);
     private final User user = User.create("test@test.com", "Test1234!", "testNickname", "");

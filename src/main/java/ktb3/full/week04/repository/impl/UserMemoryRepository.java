@@ -2,43 +2,37 @@ package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.domain.base.Deletable;
+import ktb3.full.week04.infrastructure.database.table.Table;
 import ktb3.full.week04.repository.UserRepository;
-import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Repository
 public class UserMemoryRepository implements UserRepository {
 
-    private final IdentifierGenerator<User, Long> identifierGenerator;
-
-    private final Map<Long, User> table = new ConcurrentHashMap<>();
+    private final Table<User, Long> table;
 
     @Override
     public boolean existsByEmail(String email) {
-        return table.values().stream()
+        return table.selectAll().stream()
                 .anyMatch(user -> user.getEmail().equals(email));
     }
 
     @Override
     public boolean existsByNickname(String nickname) {
-        return table.values().stream()
+        return table.selectAll().stream()
                 .anyMatch(user -> user.getNickname().equals(nickname));
     }
 
     @Override
     public Long save(User user) {
-        long userId = identifierGenerator.generate(user);
+        Long userId = table.insert(user);
         user.auditCreate();
-        table.put(userId, user);
-
         return userId;
     }
 
@@ -49,12 +43,12 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long userId) {
-        return Deletable.validateExists(table.get(userId));
+        return Deletable.validateExists(table.select(userId));
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Deletable.validateExists(table.values().stream()
+        return Deletable.validateExists(table.selectAll().stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
                 .orElse(null));
@@ -67,10 +61,10 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public void delete(User user) {
-        table.remove(user.getUserId());
+        table.delete(user.getUserId());
     }
 
     public List<User> findAll() {
-        return new ArrayList<>(table.values());
+        return new ArrayList<>(table.selectAll());
     }
 }
