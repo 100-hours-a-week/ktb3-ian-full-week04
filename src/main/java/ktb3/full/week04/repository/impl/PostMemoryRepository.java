@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -27,8 +25,6 @@ public class PostMemoryRepository implements PostRepository {
     private final Table<Post, Long> table;
 
     private final AtomicLong activePostCounter = new AtomicLong(0L);
-
-    private final Map<String, List<Long>> ascSortedTable = new ConcurrentHashMap<>();
 
     private final Lock lock = new ReentrantLock();
 
@@ -74,14 +70,11 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public PageResponse<Post> findAll(PageRequest pageRequest, Sort sort) {
-        if (!ascSortedTable.containsKey(sort.getProperty())) {
-            ascSortedTable.put(sort.getProperty(), table.selectAll().stream()
-                    .sorted(SortUtil.getComparator(sort))
-                    .map(Post::getPostId)
-                    .toList());
-        }
+        List<Long> sortedList = table.selectAll().stream()
+                .sorted(SortUtil.getComparator(sort))
+                .map(Post::getPostId)
+                .toList();
 
-        List<Long> sortedList = ascSortedTable.get(sort.getProperty());
         if (sort.isDescending()) {
             sortedList = sortedList.reversed();
         }
