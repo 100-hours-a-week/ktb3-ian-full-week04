@@ -4,6 +4,7 @@ import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
+import ktb3.full.week04.dto.page.Sort;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import ktb3.full.week04.util.PageUtil;
@@ -79,16 +80,16 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public PageResponse<Post> findAll(PageRequest pageRequest) {
-        if (!ascSortedTable.containsKey(pageRequest.getSort().getProperty())) {
-            ascSortedTable.put(pageRequest.getSort().getProperty(), table.values().stream()
-                    .sorted(SortUtil.getComparator(pageRequest.getSort()))
+    public PageResponse<Post> findAll(PageRequest pageRequest, Sort sort) {
+        if (!ascSortedTable.containsKey(sort.getProperty())) {
+            ascSortedTable.put(sort.getProperty(), table.values().stream()
+                    .sorted(SortUtil.getComparator(sort))
                     .map(Post::getPostId)
                     .toList());
         }
 
-        List<Long> sortedList = ascSortedTable.get(pageRequest.getSort().getProperty());
-        if (pageRequest.getSort().isDescending()) {
+        List<Long> sortedList = ascSortedTable.get(sort.getProperty());
+        if (sort.isDescending()) {
             sortedList = sortedList.reversed();
         }
 

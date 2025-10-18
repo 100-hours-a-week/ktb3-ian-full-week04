@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
+import ktb3.full.week04.dto.page.Sort;
 import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.ApiSuccessResponse;
@@ -30,8 +31,8 @@ public class PostApiController implements PostApi {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest) {
-        PageResponse<PostResponse> response = postService.getAllPosts(pageRequest);
+    public ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest, @Valid Sort sort) {
+        PageResponse<PostResponse> response = postService.getAllPosts(pageRequest, sort);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }

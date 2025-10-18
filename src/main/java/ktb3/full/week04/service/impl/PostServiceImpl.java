@@ -6,6 +6,7 @@ import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
+import ktb3.full.week04.dto.page.Sort;
 import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.PostDetailResponse;
@@ -33,8 +34,8 @@ public class PostServiceImpl implements PostService {
     private final Lock lock = new ReentrantLock();
 
     @Override
-    public PageResponse<PostResponse> getAllPosts(PageRequest pageRequest) {
-        PageResponse<Post> posts = postRepository.findAll(pageRequest);
+    public PageResponse<PostResponse> getAllPosts(PageRequest pageRequest, Sort sort) {
+        PageResponse<Post> posts = postRepository.findAll(pageRequest, sort);
         List<PostResponse> responses = posts.getContent().stream().map(PostResponse::from).toList();
 
         return PageResponse.to(posts, responses);

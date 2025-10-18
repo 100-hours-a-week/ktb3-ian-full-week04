@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Positive;
 import ktb3.full.week04.common.annotation.resolver.Authentication;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
+import ktb3.full.week04.dto.page.Sort;
 import ktb3.full.week04.dto.request.PostCreateRequest;
 import ktb3.full.week04.dto.request.PostUpdateRequest;
 import ktb3.full.week04.dto.response.*;
@@ -29,7 +30,7 @@ public interface PostApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest);
+    ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest, @Valid Sort sort);
 
     @Operation(summary = "게시글 상세 조회", description = "ID를 이용해 특정 게시글을 조회합니다.")
     @ApiResponses(value = {
