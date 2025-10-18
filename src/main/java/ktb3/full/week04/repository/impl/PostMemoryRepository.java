@@ -5,8 +5,10 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.PostRepository;
+import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import ktb3.full.week04.util.PageUtil;
 import ktb3.full.week04.util.SortUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,10 +19,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@RequiredArgsConstructor
 @Repository
 public class PostMemoryRepository implements PostRepository {
 
-    private final AtomicLong postIdCounter = new AtomicLong(1L);
+    private final IdentifierGenerator<Post, Long> identifierGenerator;
+
     private final AtomicLong activePostCounter = new AtomicLong(0L);
 
     private final Map<Long, Post> table = new ConcurrentHashMap<>();
@@ -39,8 +43,7 @@ public class PostMemoryRepository implements PostRepository {
 
         try {
             lock.lock();
-            postId = postIdCounter.getAndIncrement();
-            post.save(postId);
+            postId = identifierGenerator.generate(post);
             if (post.getCreatedAt() == null) {
                 post.auditCreate();
             }

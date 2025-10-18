@@ -5,6 +5,7 @@ import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
+import ktb3.full.week04.infrastructure.database.identifier.LongIdentifierGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
@@ -14,9 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CommentMemoryRepositoryTest {
 
-    private final UserRepository userRepository = new UserMemoryRepository();
-    private final PostRepository postRepository = new PostMemoryRepository();
-    private final CommentMemoryRepository commentMemoryRepository = new CommentMemoryRepository();
+    private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final UserRepository userRepository = new UserMemoryRepository(userIdentifierGenerator);
+    private final PostRepository postRepository = new PostMemoryRepository(postIdentifierGenerator);
+    private final CommentMemoryRepository commentMemoryRepository = new CommentMemoryRepository(commentIdentifierGenerator);
     private final User user = User.create("test@test.com", "Test1234!", "testNickname", "");
     private final Post post = Post.create(user, "testTitle", "testContent", "");
 
