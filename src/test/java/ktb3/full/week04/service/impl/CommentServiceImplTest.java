@@ -1,5 +1,6 @@
 package ktb3.full.week04.service.impl;
 
+import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.request.CommentCreateRequest;
@@ -7,6 +8,7 @@ import ktb3.full.week04.dto.response.CommentResponse;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
+import ktb3.full.week04.infrastructure.database.identifier.LongIdentifierGenerator;
 import ktb3.full.week04.repository.impl.CommentMemoryRepository;
 import ktb3.full.week04.repository.impl.PostLikeMemoryRepository;
 import ktb3.full.week04.repository.impl.PostMemoryRepository;
@@ -21,12 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CommentServiceImplTest {
 
-    private final UserRepository userRepository = new UserMemoryRepository();
-    private final PostRepository postRepository = new PostMemoryRepository();
+    private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final UserRepository userRepository = new UserMemoryRepository(userIdentifierGenerator);
+    private final PostRepository postRepository = new PostMemoryRepository(postIdentifierGenerator);
     private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository();
     private final UserService userService = new UserServiceImpl(userRepository);
     private final PostService postService = new PostServiceImpl(postRepository, postLikeRepository, userService);
-    private final CommentMemoryRepository commentRepository = new CommentMemoryRepository();
+    private final CommentMemoryRepository commentRepository = new CommentMemoryRepository(commentIdentifierGenerator);
     private final CommentService commentService = new CommentServiceImpl(commentRepository, userService, postService);
     private final User user = User.create("test@test.com", "Test1234!", "testNickname", "");
     private final Post post = Post.create(user, "testTitle", "testContent", "");

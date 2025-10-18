@@ -5,7 +5,9 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.repository.CommentRepository;
+import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import ktb3.full.week04.util.PageUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -17,10 +19,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@RequiredArgsConstructor
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
 
-    private final AtomicLong commentIdCounter = new AtomicLong(1L);
+    private final IdentifierGenerator<Comment, Long> identifierGenerator;
 
     private final Map<Long, Comment> table = new ConcurrentHashMap<>();
     private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
@@ -34,8 +37,7 @@ public class CommentMemoryRepository implements CommentRepository {
 
         try {
             commentLock.lock();
-            commentId = commentIdCounter.getAndIncrement();
-            comment.save(commentId);
+            commentId = identifierGenerator.generate(comment);
 
             if (comment.getCreatedAt() == null) {
                 comment.auditCreate();
