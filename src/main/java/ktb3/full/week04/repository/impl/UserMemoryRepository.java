@@ -3,6 +3,8 @@ package ktb3.full.week04.repository.impl;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.repository.UserRepository;
+import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+@RequiredArgsConstructor
 @Repository
 public class UserMemoryRepository implements UserRepository {
 
-    private final AtomicLong userIdCounter = new AtomicLong(1L);
+    private final IdentifierGenerator<User, Long> identifierGenerator;
 
     private final Map<Long, User> table = new ConcurrentHashMap<>();
 
@@ -33,8 +35,7 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public Long save(User user) {
-        long userId = userIdCounter.getAndIncrement();
-        user.save(userId);
+        long userId = identifierGenerator.generate(user);
         user.auditCreate();
         table.put(userId, user);
 

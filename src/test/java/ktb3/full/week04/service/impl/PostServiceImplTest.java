@@ -5,6 +5,7 @@ import ktb3.full.week04.domain.User;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
+import ktb3.full.week04.infrastructure.database.identifier.LongIdentifierGenerator;
 import ktb3.full.week04.repository.impl.PostLikeMemoryRepository;
 import ktb3.full.week04.repository.impl.PostMemoryRepository;
 import ktb3.full.week04.repository.impl.UserMemoryRepository;
@@ -17,8 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PostServiceImplTest {
 
-    private final UserRepository userRepository = new UserMemoryRepository();
-    private final PostRepository postRepository = new PostMemoryRepository();
+    private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
+    private final UserRepository userRepository = new UserMemoryRepository(userIdentifierGenerator);
+    private final PostRepository postRepository = new PostMemoryRepository(postIdentifierGenerator);
     private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository();
     private final UserService userService = new UserServiceImpl(userRepository);
     private final PostService postService = new PostServiceImpl(postRepository, postLikeRepository, userService);
