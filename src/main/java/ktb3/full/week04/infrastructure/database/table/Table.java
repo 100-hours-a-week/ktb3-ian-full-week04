@@ -2,18 +2,13 @@ package ktb3.full.week04.infrastructure.database.table;
 
 import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
-@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Component
-public class Table<T, ID> {
+public abstract class Table<T, ID> {
 
     private final IdentifierGenerator<T, ID> identifierGenerator;
     private final Map<ID, T> table = new ConcurrentHashMap<>();
