@@ -4,52 +4,27 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
-import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.dto.page.Sort;
+import ktb3.full.week04.infrastructure.database.table.CommentTable;
 import ktb3.full.week04.repository.CommentRepository;
 import ktb3.full.week04.util.PageUtil;
+import ktb3.full.week04.util.SortUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
 
-    private final AuditingTable<Comment, Long> table;
-
-    private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
-    private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();
-
-    private final Lock commentLock = new ReentrantLock();
+    private final CommentTable table;
 
     @Override
     public Long save(Comment comment) {
-        long commentId;
-
-        try {
-            commentLock.lock();
-            commentId = table.insert(comment);
-
-            long postId = comment.getPost().getPostId();
-            if (!postIdToCommentIds.containsKey(postId)) {
-                postIdToCommentIds.put(postId, new ArrayList<>());
-                postIdToActiveCommentCounter.put(postId, new AtomicLong());
-            }
-            postIdToCommentIds.get(postId).add(commentId);
-            postIdToActiveCommentCounter.get(postId).getAndIncrement();
-        } finally {
-            commentLock.unlock();
-        }
-
-        return commentId;
+        return table.insert(comment);
     }
 
     @Override
@@ -64,42 +39,36 @@ public class CommentMemoryRepository implements CommentRepository {
 
     @Override
     public void update(Comment comment) {
-        if (comment.isDeleted()) {
-            postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
-        }
         table.update(comment.getCommentId(), comment);
     }
 
     @Override
     public void delete(Comment comment) {
-        table.delete(comment.getCommentId());
-
-        try {
-            commentLock.lock();
-            postIdToCommentIds.get(comment.getPost().getPostId()).remove(comment.getCommentId());
-            postIdToActiveCommentCounter.get(comment.getPost().getPostId()).getAndDecrement();
-        } finally {
-            commentLock.unlock();
-        }
+        table.delete(comment.getCommentId(), comment.getPost().getPostId());
     }
 
     public List<Comment> findAllByPostId(long postId) {
         List<Comment> comments = new ArrayList<>();
-        postIdToCommentIds.get(postId).forEach(commentId ->
-                comments.add(table.select(commentId)));
+        table.selectAll(postId).forEach(comment -> {
+            if (!comment.isDeleted()) {
+                comments.add(comment);
+            }
+        });
         return comments;
     }
 
     @Override
     public PageResponse<Comment> findAll(long postId, PageRequest pageRequest) {
-        List<Long> commentIds = postIdToCommentIds.get(postId);
+        List<Comment> comments = table.selectAll(postId);
 
-        if (commentIds == null) {
+        if (comments == null) {
             return PageResponse.of(new ArrayList<>(), pageRequest, 0);
         }
 
-        commentIds = commentIds.reversed();
+        comments = comments.stream()
+                .sorted(SortUtil.getComparator(Sort.desc("createdAt")))
+                .toList();
 
-        return PageResponse.of(PageUtil.paging(table, commentIds, pageRequest), pageRequest, postIdToActiveCommentCounter.get(postId).get());
+        return PageResponse.of(PageUtil.paging(comments, pageRequest), pageRequest, table.getTotalActiveElements(postId));
     }
 }

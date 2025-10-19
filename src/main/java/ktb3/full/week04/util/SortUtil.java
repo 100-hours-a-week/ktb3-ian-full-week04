@@ -10,7 +10,7 @@ public class SortUtil {
 
     @SuppressWarnings("unchecked")
     public static <T, R extends Comparable<R>> Comparator<T> getComparator(Sort sort) {
-        return Comparator.comparing(t -> {
+        Comparator<T> comparator = Comparator.comparing(t -> {
             try {
                 Field field = getFieldRecursively(t.getClass(), sort.getProperty());
                 field.setAccessible(true);
@@ -19,6 +19,12 @@ public class SortUtil {
                 throw new IllegalStateException(String.format("필드 %s에 접근할 수 없습니다.", sort.getProperty()));
             }
         });
+
+        if (sort.isDescending()) {
+            comparator = comparator.reversed();
+        }
+
+        return comparator;
     }
 
     private static Field getFieldRecursively(Class<?> clazz, String fieldName) {

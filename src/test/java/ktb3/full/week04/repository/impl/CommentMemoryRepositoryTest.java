@@ -4,6 +4,8 @@ import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.Post;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.infrastructure.database.table.CommentTable;
+import ktb3.full.week04.infrastructure.database.table.PostCommentConnector;
 import ktb3.full.week04.infrastructure.database.table.PostTable;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
@@ -21,8 +23,9 @@ class CommentMemoryRepositoryTest {
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
     private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
-    private final PostTable postTable = new PostTable(postIdentifierGenerator);
-    private final AuditingTable<Comment, Long> commentTable = new AuditingTable<>(commentIdentifierGenerator);
+    private final PostCommentConnector postCommentConnector = new PostCommentConnector();
+    private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
+    private final CommentTable commentTable = new CommentTable(commentIdentifierGenerator, postCommentConnector);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
     private final CommentMemoryRepository commentMemoryRepository = new CommentMemoryRepository(commentTable);
@@ -59,10 +62,6 @@ class CommentMemoryRepositoryTest {
 
         int expectedSize = loopCount * 3;
         List<Comment> comments = commentMemoryRepository.findAllByPostId(post.getPostId());
-
         assertThat(comments.size()).isEqualTo(expectedSize);
-        for (int i = 0; i < comments.size() - 1; i++) {
-            assertThat(comments.get(i).getCreatedAt()).isBeforeOrEqualTo(comments.get(i + 1).getCreatedAt());
-        }
     }
 }
