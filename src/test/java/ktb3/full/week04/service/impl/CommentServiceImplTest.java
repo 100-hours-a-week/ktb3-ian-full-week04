@@ -32,7 +32,7 @@ class CommentServiceImplTest {
     private final PostCommentConnector postCommentConnector = new PostCommentConnector();
     private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
     private final CommentTable commentTable = new CommentTable(commentIdentifierGenerator, postCommentConnector);
-    private final Table<PostLike, PostLikeMemoryRepository.UserAndPostId> postLikeTable = new Table<>(null);
+    private final PostLikeTable postLikeTable = new PostLikeTable(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
     private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository(postLikeTable);

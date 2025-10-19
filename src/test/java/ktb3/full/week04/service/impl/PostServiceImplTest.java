@@ -1,12 +1,8 @@
 package ktb3.full.week04.service.impl;
 
 import ktb3.full.week04.domain.Post;
-import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
-import ktb3.full.week04.infrastructure.database.table.AuditingTable;
-import ktb3.full.week04.infrastructure.database.table.PostCommentConnector;
-import ktb3.full.week04.infrastructure.database.table.PostTable;
-import ktb3.full.week04.infrastructure.database.table.Table;
+import ktb3.full.week04.infrastructure.database.table.*;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
@@ -28,7 +24,7 @@ class PostServiceImplTest {
     private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
     private final PostCommentConnector postCommentConnector = new PostCommentConnector();
     private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
-    private final Table<PostLike, PostLikeMemoryRepository.UserAndPostId> postLikeTable = new Table<>(null);
+    private final PostLikeTable postLikeTable = new PostLikeTable(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
     private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository(postLikeTable);
