@@ -48,15 +48,10 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public PageResponse<Post> findAll(PageRequest pageRequest, Sort sort) {
-        List<Long> sortedList = table.selectAll().stream()
+        List<Post> sortedList = table.selectAll().stream()
                 .sorted(SortUtil.getComparator(sort))
-                .map(Post::getPostId)
                 .toList();
 
-        if (sort.isDescending()) {
-            sortedList = sortedList.reversed();
-        }
-
-        return PageResponse.of(PageUtil.paging(table, sortedList, pageRequest), pageRequest, table.getTotalActiveElements());
+        return PageResponse.of(PageUtil.paging(sortedList, pageRequest), pageRequest, table.getTotalActiveElements());
     }
 }

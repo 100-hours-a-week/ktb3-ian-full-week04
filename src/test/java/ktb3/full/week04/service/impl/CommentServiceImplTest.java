@@ -6,9 +6,7 @@ import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.request.CommentCreateRequest;
 import ktb3.full.week04.dto.response.CommentResponse;
-import ktb3.full.week04.infrastructure.database.table.AuditingTable;
-import ktb3.full.week04.infrastructure.database.table.PostTable;
-import ktb3.full.week04.infrastructure.database.table.Table;
+import ktb3.full.week04.infrastructure.database.table.*;
 import ktb3.full.week04.repository.PostLikeRepository;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.repository.UserRepository;
@@ -31,8 +29,9 @@ class CommentServiceImplTest {
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
     private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
-    private final PostTable postTable = new PostTable(postIdentifierGenerator);
-    private final AuditingTable<Comment, Long> commentTable = new AuditingTable<>(commentIdentifierGenerator);
+    private final PostCommentConnector postCommentConnector = new PostCommentConnector();
+    private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
+    private final CommentTable commentTable = new CommentTable(commentIdentifierGenerator, postCommentConnector);
     private final Table<PostLike, PostLikeMemoryRepository.UserAndPostId> postLikeTable = new Table<>(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
@@ -88,7 +87,6 @@ class CommentServiceImplTest {
                 CommentCreateRequest request = new CommentCreateRequest("testContent");
                 CommentResponse response = commentService.createComment(user.getUserId(), post.getPostId(), request);
                 commentService.deleteComment(response.getUserId(), response.getCommentId());
-//                assertThat(post.getCommentCount()).isEqualTo(0);
             }
         };
 
@@ -106,6 +104,6 @@ class CommentServiceImplTest {
         threadC.join();
 
         assertThat(post.getCommentCount()).isEqualTo(0);
-        assertThat(commentRepository.findAllByPostId(post.getPostId())).hasSize(numThreads * loopCount);
+        assertThat(commentRepository.findAllByPostId(post.getPostId())).hasSize(0);
     }
 }
