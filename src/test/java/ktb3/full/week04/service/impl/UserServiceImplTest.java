@@ -4,7 +4,7 @@ import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.request.UserAccountUpdateRequest;
 import ktb3.full.week04.dto.request.UserRegisterRequest;
 import ktb3.full.week04.infrastructure.database.identifier.LongIdentifierGenerator;
-import ktb3.full.week04.infrastructure.database.table.AuditingTable;
+import ktb3.full.week04.infrastructure.database.table.UserTable;
 import ktb3.full.week04.repository.impl.UserMemoryRepository;
 import ktb3.full.week04.service.UserService;
 import org.junit.jupiter.api.RepeatedTest;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserServiceImplTest {
 
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
-    private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
+    private final UserTable userTable = new UserTable(userIdentifierGenerator);
     private final UserMemoryRepository userRepository = new UserMemoryRepository(userTable);
     private final UserService userService = new UserServiceImpl(userRepository);
 

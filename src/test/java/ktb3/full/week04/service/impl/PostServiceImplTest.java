@@ -21,7 +21,7 @@ class PostServiceImplTest {
 
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
-    private final AuditingTable<User, Long> userTable = new AuditingTable<>(userIdentifierGenerator);
+    private final UserTable userTable = new UserTable(userIdentifierGenerator);
     private final PostCommentConnector postCommentConnector = new PostCommentConnector();
     private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
     private final PostLikeTable postLikeTable = new PostLikeTable(null);
