@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PageUtil {
 
-    public static <T extends Deletable> List<T> paging(List<T> sortedList, PageRequest pageRequest) {
+    public static <T> List<T> paging(List<T> sortedList, PageRequest pageRequest) {
         if (sortedList == null) {
             return new ArrayList<>();
         }
@@ -21,8 +21,10 @@ public class PageUtil {
         while (count < pageRequest.getSize() && curr < sortedList.size()) {
             T entity = sortedList.get(curr++);
 
-            if (entity.isDeleted()) {
-                continue;
+            if (entity instanceof Deletable deletable) {
+                if (deletable.isDeleted()) {
+                    continue;
+                }
             }
 
             content.add(entity);
