@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class InMemoryTable<T, ID> {
 
     private final IdentifierGenerator<T, ID> identifierGenerator;
-    private final Map<ID, T> table = new ConcurrentHashMap<>();
+    protected final Map<ID, T> table = new ConcurrentHashMap<>();
 
     public Collection<T> selectAll() {
         return table.values();

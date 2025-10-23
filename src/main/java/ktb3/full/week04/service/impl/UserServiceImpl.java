@@ -37,17 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long register(UserRegisterRequest request) {
-        long savedId;
-        lock.lock();
-        try {
-            validateEmailDuplication(request.getEmail());
-            validateNicknameDuplication(request.getNickname());
-            savedId = userRepository.save(request.toEntity());
-        } finally {
-            lock.unlock();
-        }
-
-        return savedId;
+        validateEmailDuplication(request.getEmail());
+        validateNicknameDuplication(request.getNickname());
+        return userRepository.save(request.toEntity());
     }
 
     @Override
@@ -78,14 +70,14 @@ public class UserServiceImpl implements UserService {
     public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
-        lock.lock();
-        try {
-            if (request.getNickname() != null) {
+        if (request.getNickname() != null) {
+            lock.lock();
+            try {
                 validateNicknameDuplication(request.getNickname());
                 user.updateNickname(request.getNickname());
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
         }
 
         if (request.getProfileImage() != null) {
