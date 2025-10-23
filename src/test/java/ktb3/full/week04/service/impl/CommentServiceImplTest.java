@@ -2,7 +2,6 @@ package ktb3.full.week04.service.impl;
 
 import ktb3.full.week04.domain.Comment;
 import ktb3.full.week04.domain.Post;
-import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.dto.request.CommentCreateRequest;
 import ktb3.full.week04.dto.response.CommentResponse;
@@ -28,11 +27,11 @@ class CommentServiceImplTest {
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
-    private final UserTable userTable = new UserTable(userIdentifierGenerator);
+    private final InMemoryUserTable userTable = new InMemoryUserTable(userIdentifierGenerator);
     private final PostCommentConnector postCommentConnector = new PostCommentConnector();
-    private final PostTable postTable = new PostTable(postIdentifierGenerator, postCommentConnector);
-    private final CommentTable commentTable = new CommentTable(commentIdentifierGenerator, postCommentConnector);
-    private final PostLikeTable postLikeTable = new PostLikeTable(null);
+    private final InMemoryPostTable postTable = new InMemoryPostTable(postIdentifierGenerator, postCommentConnector);
+    private final InMemoryCommentTable commentTable = new InMemoryCommentTable(commentIdentifierGenerator, postCommentConnector);
+    private final InMemoryPostLikeTable postLikeTable = new InMemoryPostLikeTable(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
     private final PostLikeRepository postLikeRepository = new PostLikeMemoryRepository(postLikeTable);

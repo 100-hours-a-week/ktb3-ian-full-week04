@@ -5,7 +5,7 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.page.Sort;
-import ktb3.full.week04.infrastructure.database.table.CommentTable;
+import ktb3.full.week04.infrastructure.database.table.InMemoryCommentTable;
 import ktb3.full.week04.repository.CommentRepository;
 import ktb3.full.week04.util.PageUtil;
 import ktb3.full.week04.util.SortUtil;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public class CommentMemoryRepository implements CommentRepository {
 
-    private final CommentTable table;
+    private final InMemoryCommentTable table;
 
     @Override
     public Long save(Comment comment) {

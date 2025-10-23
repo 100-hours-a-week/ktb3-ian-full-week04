@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CommentTable extends AuditingTable<Comment, Long> {
+public class InMemoryCommentTable extends InMemoryAuditingTable<Comment, Long> {
 
     private final PostCommentConnector postCommentConnector;
 
-    public CommentTable(IdentifierGenerator<Comment, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
+    public InMemoryCommentTable(IdentifierGenerator<Comment, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
         super(identifierGenerator);
         this.postCommentConnector = postCommentConnector;
     }

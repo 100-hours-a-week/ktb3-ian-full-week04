@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
-public class PostTable extends AuditingTable<Post, Long> {
+public class InMemoryPostTable extends InMemoryAuditingTable<Post, Long> {
 
     private final AtomicLong activePostCounter = new AtomicLong(0L);
     private final PostCommentConnector postCommentConnector;
 
-    public PostTable(IdentifierGenerator<Post, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
+    public InMemoryPostTable(IdentifierGenerator<Post, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
         super(identifierGenerator);
         this.postCommentConnector = postCommentConnector;
     }

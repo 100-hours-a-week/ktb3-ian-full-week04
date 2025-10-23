@@ -5,7 +5,7 @@ import ktb3.full.week04.domain.base.Deletable;
 import ktb3.full.week04.dto.page.PageRequest;
 import ktb3.full.week04.dto.page.PageResponse;
 import ktb3.full.week04.dto.page.Sort;
-import ktb3.full.week04.infrastructure.database.table.PostTable;
+import ktb3.full.week04.infrastructure.database.table.InMemoryPostTable;
 import ktb3.full.week04.repository.PostRepository;
 import ktb3.full.week04.util.PageUtil;
 import ktb3.full.week04.util.SortUtil;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @Repository
 public class PostMemoryRepository implements PostRepository {
 
-    private final PostTable table;
+    private final InMemoryPostTable table;
 
     @Override
     public Optional<Post> findById(Long postId) {

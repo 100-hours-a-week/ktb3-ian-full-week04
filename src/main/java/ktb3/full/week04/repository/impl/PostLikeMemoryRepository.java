@@ -2,7 +2,7 @@ package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.PostLike;
 import ktb3.full.week04.domain.value.CompositeId;
-import ktb3.full.week04.infrastructure.database.table.PostLikeTable;
+import ktb3.full.week04.infrastructure.database.table.InMemoryPostLikeTable;
 import ktb3.full.week04.repository.PostLikeRepository;
 import lombok.*;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class PostLikeMemoryRepository implements PostLikeRepository {
 
-    private final PostLikeTable table;
+    private final InMemoryPostLikeTable table;
 
     @Override
     public boolean existsAndLiked(long userId, long postId) {

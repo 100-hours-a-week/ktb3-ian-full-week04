@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
-public abstract class Table<T, ID> {
+public abstract class InMemoryTable<T, ID> {
 
     private final IdentifierGenerator<T, ID> identifierGenerator;
     private final Map<ID, T> table = new ConcurrentHashMap<>();
