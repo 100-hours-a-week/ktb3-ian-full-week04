@@ -6,9 +6,9 @@ import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PostLikeTable extends Table<PostLike, CompositeId<Long, Long>> {
+public class InMemoryPostLikeTable extends InMemoryTable<PostLike, CompositeId<Long, Long>> {
 
-    public PostLikeTable(IdentifierGenerator<PostLike, CompositeId<Long, Long>> identifierGenerator) {
+    public InMemoryPostLikeTable(IdentifierGenerator<PostLike, CompositeId<Long, Long>> identifierGenerator) {
         super(identifierGenerator);
     }
 }

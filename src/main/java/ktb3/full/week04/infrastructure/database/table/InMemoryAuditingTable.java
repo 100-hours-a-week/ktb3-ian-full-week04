@@ -3,9 +3,9 @@ package ktb3.full.week04.infrastructure.database.table;
 import ktb3.full.week04.domain.base.Auditing;
 import ktb3.full.week04.infrastructure.database.identifier.IdentifierGenerator;
 
-public abstract class AuditingTable<T extends Auditing, ID> extends Table<T, ID> {
+public abstract class InMemoryAuditingTable<T extends Auditing, ID> extends InMemoryTable<T, ID> {
 
-    public AuditingTable(IdentifierGenerator<T, ID> identifierGenerator) {
+    public InMemoryAuditingTable(IdentifierGenerator<T, ID> identifierGenerator) {
         super(identifierGenerator);
     }
 

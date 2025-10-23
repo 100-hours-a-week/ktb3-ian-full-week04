@@ -2,7 +2,7 @@ package ktb3.full.week04.repository.impl;
 
 import ktb3.full.week04.domain.User;
 import ktb3.full.week04.domain.base.Deletable;
-import ktb3.full.week04.infrastructure.database.table.UserTable;
+import ktb3.full.week04.infrastructure.database.table.InMemoryUserTable;
 import ktb3.full.week04.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public class UserMemoryRepository implements UserRepository {
 
-    private final UserTable table;
+    private final InMemoryUserTable table;
 
     @Override
     public boolean existsByEmail(String email) {
