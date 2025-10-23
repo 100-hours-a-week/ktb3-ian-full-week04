@@ -20,9 +20,9 @@ class CommentMemoryRepositoryTest {
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Comment> commentIdentifierGenerator = new LongIdentifierGenerator<>();
     private final InMemoryUserTable userTable = new InMemoryUserTable(userIdentifierGenerator);
-    private final PostCommentConnector postCommentConnector = new PostCommentConnector();
-    private final InMemoryPostTable postTable = new InMemoryPostTable(postIdentifierGenerator, postCommentConnector);
-    private final InMemoryCommentTable commentTable = new InMemoryCommentTable(commentIdentifierGenerator, postCommentConnector);
+    private final PostCommentRelationManager postCommentRelationManager = new PostCommentRelationManager();
+    private final InMemoryPostTable postTable = new InMemoryPostTable(postIdentifierGenerator, postCommentRelationManager);
+    private final InMemoryCommentTable commentTable = new InMemoryCommentTable(commentIdentifierGenerator, postCommentRelationManager);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);
     private final CommentMemoryRepository commentMemoryRepository = new CommentMemoryRepository(commentTable);

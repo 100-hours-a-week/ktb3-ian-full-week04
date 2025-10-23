@@ -9,17 +9,17 @@ import java.util.List;
 @Component
 public class InMemoryCommentTable extends InMemoryAuditingTable<Comment, Long> {
 
-    private final PostCommentConnector postCommentConnector;
+    private final PostCommentRelationManager postCommentRelationManager;
 
-    public InMemoryCommentTable(IdentifierGenerator<Comment, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
+    public InMemoryCommentTable(IdentifierGenerator<Comment, Long> identifierGenerator, PostCommentRelationManager postCommentRelationManager) {
         super(identifierGenerator);
-        this.postCommentConnector = postCommentConnector;
+        this.postCommentRelationManager = postCommentRelationManager;
     }
 
     @Override
     public Long insert(Comment entity) {
         long commentId = super.insert(entity);
-        postCommentConnector.createComment(entity.getPost().getPostId(), commentId);
+        postCommentRelationManager.createComment(entity.getPost().getPostId(), commentId);
         return commentId;
     }
 
@@ -27,22 +27,22 @@ public class InMemoryCommentTable extends InMemoryAuditingTable<Comment, Long> {
     public void update(Long id, Comment entity) {
         super.update(id, entity);
         if (entity.isDeleted()) {
-            postCommentConnector.decreaseCommentCount(entity.getPost().getPostId());
+            postCommentRelationManager.decreaseCommentCount(entity.getPost().getPostId());
         }
     }
 
     public void delete(Long id, long postId) {
         super.delete(id);
-        postCommentConnector.removeComment(postId, id);
+        postCommentRelationManager.removeComment(postId, id);
     }
 
     public List<Comment> selectAll(long postId) {
-        return postCommentConnector.getCommentIds(postId).stream()
+        return postCommentRelationManager.getCommentIds(postId).stream()
                 .map(super::select)
                 .toList();
     }
 
     public long getTotalActiveElements(long postId) {
-        return postCommentConnector.getTotalActiveComments(postId);
+        return postCommentRelationManager.getTotalActiveComments(postId);
     }
 }
