@@ -11,7 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
-public class PostCommentConnector {
+public class PostCommentRelationManager {
 
     private final Map<Long, List<Long>> postIdToCommentIds = new ConcurrentHashMap<>();
     private final Map<Long, AtomicLong> postIdToActiveCommentCounter = new ConcurrentHashMap<>();

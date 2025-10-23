@@ -22,8 +22,8 @@ class PostServiceImplTest {
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final LongIdentifierGenerator<Post> postIdentifierGenerator = new LongIdentifierGenerator<>();
     private final InMemoryUserTable userTable = new InMemoryUserTable(userIdentifierGenerator);
-    private final PostCommentConnector postCommentConnector = new PostCommentConnector();
-    private final InMemoryPostTable postTable = new InMemoryPostTable(postIdentifierGenerator, postCommentConnector);
+    private final PostCommentRelationManager postCommentRelationManager = new PostCommentRelationManager();
+    private final InMemoryPostTable postTable = new InMemoryPostTable(postIdentifierGenerator, postCommentRelationManager);
     private final InMemoryPostLikeTable postLikeTable = new InMemoryPostLikeTable(null);
     private final UserRepository userRepository = new UserMemoryRepository(userTable);
     private final PostRepository postRepository = new PostMemoryRepository(postTable);

@@ -10,18 +10,18 @@ import java.util.concurrent.atomic.AtomicLong;
 public class InMemoryPostTable extends InMemoryAuditingTable<Post, Long> {
 
     private final AtomicLong activePostCounter = new AtomicLong(0L);
-    private final PostCommentConnector postCommentConnector;
+    private final PostCommentRelationManager postCommentRelationManager;
 
-    public InMemoryPostTable(IdentifierGenerator<Post, Long> identifierGenerator, PostCommentConnector postCommentConnector) {
+    public InMemoryPostTable(IdentifierGenerator<Post, Long> identifierGenerator, PostCommentRelationManager postCommentRelationManager) {
         super(identifierGenerator);
-        this.postCommentConnector = postCommentConnector;
+        this.postCommentRelationManager = postCommentRelationManager;
     }
 
     @Override
     public Long insert(Post entity) {
         Long postId = super.insert(entity);
         activePostCounter.getAndIncrement();
-        postCommentConnector.createPost(postId);
+        postCommentRelationManager.createPost(postId);
         return postId;
     }
 
@@ -37,7 +37,7 @@ public class InMemoryPostTable extends InMemoryAuditingTable<Post, Long> {
     public void delete(Long id) {
         super.delete(id);
         activePostCounter.getAndDecrement();
-        postCommentConnector.removePost(id);
+        postCommentRelationManager.removePost(id);
     }
 
     public long getTotalActiveElements() {
