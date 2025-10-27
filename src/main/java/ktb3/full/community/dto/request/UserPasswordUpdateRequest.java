@@ -1,0 +1,20 @@
+package ktb3.full.community.dto.request;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import ktb3.full.community.common.annotation.constraint.PasswordPattern;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import static ktb3.full.community.common.Constants.MESSAGE_NOT_NULL_PASSWORD;
+
+@Schema(title = "회원 비밀번호 수정 요청 DTO")
+@Getter
+@RequiredArgsConstructor
+public class UserPasswordUpdateRequest {
+
+    @Schema(description = "비밀번호", example = "Testpassword1!")
+    @NotNull(message = MESSAGE_NOT_NULL_PASSWORD)
+    @PasswordPattern
+    private final String password;
+}
