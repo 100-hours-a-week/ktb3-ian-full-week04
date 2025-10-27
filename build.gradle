@@ -6,7 +6,7 @@ plugins {
 
 group = 'ktb3.full'
 version = '0.0.1-SNAPSHOT'
-description = 'week04'
+description = 'community'
 
 java {
     toolchain {
