@@ -1,48 +1,46 @@
 package ktb3.full.community.service.impl;
 
 import ktb3.full.community.common.exception.*;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
+import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
-import ktb3.full.community.dto.response.UserAccountResponse;
-import ktb3.full.community.repository.UserRepository;
-import ktb3.full.community.service.UserService;
+import ktb3.full.community.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
     private final UserRepository userRepository;
 
     private final Lock lock = new ReentrantLock();
 
-    @Override
     public UserValidationResponse validateEmailAvailable(String email) {
         return new UserValidationResponse(!userRepository.existsByEmail(email));
     }
 
-    @Override
     public UserValidationResponse validateNicknameAvailable(String nickname) {
         return new UserValidationResponse(!userRepository.existsByNickname(nickname));
     }
 
-    @Override
+    @Transactional
     public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
-        return userRepository.save(request.toEntity());
+        return userRepository.save(request.toEntity()).getId();
     }
 
-    @Override
     public UserAccountResponse login(UserLoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialsException::new);
@@ -54,19 +52,17 @@ public class UserServiceImpl implements UserService {
         return UserAccountResponse.from(user);
     }
 
-    @Override
     public UserAccountResponse getUserAccount(long userId) {
         User user = getOrThrow(userId);
         return UserAccountResponse.from(user);
     }
 
-    @Override
     public UserProfileResponse getUserProfile(long userId) {
         User user = getOrThrow(userId);
         return UserProfileResponse.from(user);
     }
 
-    @Override
+    @Transactional
     public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
@@ -84,36 +80,28 @@ public class UserServiceImpl implements UserService {
             user.updateProfileImage(request.getProfileImage());
         }
 
-        userRepository.update(user);
-
         return UserAccountResponse.from(user);
     }
 
-    @Override
+    @Transactional
     public void updatePassword(long userId, UserPasswordUpdateRequest request) {
         User user = getOrThrow(userId);
         user.updatePassword(request.getPassword());
-
-        userRepository.update(user);
     }
 
-    @Override
+    @Transactional
     public void deleteAccount(long userId) {
         // soft delete
         User user = getOrThrow(userId);
         user.delete();
-
-        userRepository.update(user);
     }
 
-    @Override
     public void validatePermission(long requestUserId, long actualUserId) {
         if (requestUserId != actualUserId) {
             throw new NoPermissionException();
         }
     }
 
-    @Override
     public User getOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);

@@ -15,6 +15,7 @@ import ktb3.full.community.dto.response.PostResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.PostApi;
 import ktb3.full.community.service.PostService;
+import ktb3.full.community.service.impl.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,13 +29,13 @@ import java.net.URI;
 @RestController
 public class PostApiController implements PostApi {
 
-    private final PostService postService;
+    private final PostServiceImpl postService;
 
     @GetMapping
     public ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest, @Valid Sort sort) {
-        PageResponse<PostResponse> response = postService.getAllPosts(pageRequest, sort);
+//        PageResponse<PostResponse> response = postService.getAllPosts(pageRequest, sort);
         return ResponseEntity.ok()
-                .body(ApiSuccessResponse.of(response));
+                .body(ApiSuccessResponse.of(null));
     }
 
     @GetMapping("/{postId}")

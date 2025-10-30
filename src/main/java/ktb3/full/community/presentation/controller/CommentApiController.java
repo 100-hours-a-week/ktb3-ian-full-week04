@@ -11,7 +11,7 @@ import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.CommentResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.CommentApi;
-import ktb3.full.community.service.CommentService;
+import ktb3.full.community.service.impl.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +24,7 @@ import java.net.URI;
 @RestController
 public class CommentApiController implements CommentApi {
 
-    private final CommentService commentService;
+    private final CommentServiceImpl commentService;
 
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiSuccessResponse<PageResponse<CommentResponse>>> getAllComments(

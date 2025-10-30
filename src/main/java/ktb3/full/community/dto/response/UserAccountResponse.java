@@ -2,7 +2,7 @@ package ktb3.full.community.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +30,6 @@ public class UserAccountResponse {
     private final LocalDateTime createdAt;
 
     public static UserAccountResponse from(User user) {
-        return new UserAccountResponse(user.getUserId(), user.getEmail(), user.getNickname(), user.getProfileImage(), user.getCreatedAt());
+        return new UserAccountResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImageUrl(), user.getCreatedAt());
     }
 }

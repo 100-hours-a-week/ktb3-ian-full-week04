@@ -9,7 +9,7 @@ import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.AuthenticatedUserApi;
-import ktb3.full.community.service.UserService;
+import ktb3.full.community.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthenticatedUserApiController implements AuthenticatedUserApi {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @GetMapping
     public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser) {

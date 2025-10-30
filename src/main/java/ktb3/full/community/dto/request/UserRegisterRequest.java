@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
 import ktb3.full.community.common.annotation.constraint.NicknamePattern;
 import ktb3.full.community.common.annotation.constraint.PasswordPattern;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;

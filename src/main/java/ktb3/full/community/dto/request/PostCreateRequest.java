@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import ktb3.full.community.common.annotation.constraint.PostContentPattern;
 import ktb3.full.community.common.annotation.constraint.PostTitlePattern;
-import ktb3.full.community.domain.Post;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.Post;
+import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

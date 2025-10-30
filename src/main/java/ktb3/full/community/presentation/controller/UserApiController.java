@@ -14,6 +14,7 @@ import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.UserApi;
 import ktb3.full.community.service.UserService;
+import ktb3.full.community.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +30,7 @@ import static ktb3.full.community.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED
 @RestController
 public class UserApiController implements UserApi {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @GetMapping("/email-validation")
     public ResponseEntity<ApiSuccessResponse<UserValidationResponse>> validateEmailAvailable(@EmailPattern @RequestParam("email") String email) {
