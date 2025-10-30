@@ -1,34 +1,121 @@
 package ktb3.full.community.service;
 
-import ktb3.full.community.domain.User;
+import ktb3.full.community.common.exception.*;
+import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
+import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
-import ktb3.full.community.dto.response.UserAccountResponse;
-import ktb3.full.community.service.base.Findable;
+import ktb3.full.community.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface UserService extends Findable<User, Long> {
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-    UserValidationResponse validateEmailAvailable(String email);
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Service
+public class UserService {
 
-    UserValidationResponse validateNicknameAvailable(String nickname);
+    private final UserRepository userRepository;
 
-    long register(UserRegisterRequest request);
+    private final Lock lock = new ReentrantLock();
 
-    UserAccountResponse login(UserLoginRequest request);
+    public UserValidationResponse validateEmailAvailable(String email) {
+        return new UserValidationResponse(!userRepository.existsByEmail(email));
+    }
 
-    UserAccountResponse getUserAccount(long userId);
+    public UserValidationResponse validateNicknameAvailable(String nickname) {
+        return new UserValidationResponse(!userRepository.existsByNickname(nickname));
+    }
 
-    UserProfileResponse getUserProfile(long userId);
+    @Transactional
+    public long register(UserRegisterRequest request) {
+        validateEmailDuplication(request.getEmail());
+        validateNicknameDuplication(request.getNickname());
+        return userRepository.save(request.toEntity()).getId();
+    }
 
-    UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request);
+    public UserAccountResponse login(UserLoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(InvalidCredentialsException::new);
 
-    void updatePassword(long userId, UserPasswordUpdateRequest request);
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
 
-    void deleteAccount(long userId);
+        return UserAccountResponse.from(user);
+    }
 
-    void validatePermission(long requestUserId, long actualUserId);
+    public UserAccountResponse getUserAccount(long userId) {
+        User user = getOrThrow(userId);
+        return UserAccountResponse.from(user);
+    }
+
+    public UserProfileResponse getUserProfile(long userId) {
+        User user = getOrThrow(userId);
+        return UserProfileResponse.from(user);
+    }
+
+    @Transactional
+    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
+        User user = getOrThrow(userId);
+
+        if (request.getNickname() != null) {
+            lock.lock();
+            try {
+                validateNicknameDuplication(request.getNickname());
+                user.updateNickname(request.getNickname());
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        if (request.getProfileImage() != null) {
+            user.updateProfileImage(request.getProfileImage());
+        }
+
+        return UserAccountResponse.from(user);
+    }
+
+    @Transactional
+    public void updatePassword(long userId, UserPasswordUpdateRequest request) {
+        User user = getOrThrow(userId);
+        user.updatePassword(request.getPassword());
+    }
+
+    @Transactional
+    public void deleteAccount(long userId) {
+        // soft delete
+        User user = getOrThrow(userId);
+        user.delete();
+    }
+
+    public void validatePermission(long requestUserId, long actualUserId) {
+        if (requestUserId != actualUserId) {
+            throw new NoPermissionException();
+        }
+    }
+
+    public User getOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    private void validateEmailDuplication(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicatedEmailException();
+        }
+    }
+
+    private void validateNicknameDuplication(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new DuplicatedNicknameException();
+        }
+    }
 }

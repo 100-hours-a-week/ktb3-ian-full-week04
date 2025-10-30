@@ -1,12 +1,8 @@
 package ktb3.full.community.repository;
 
-import ktb3.full.community.domain.Post;
-import ktb3.full.community.dto.page.PageRequest;
-import ktb3.full.community.dto.page.PageResponse;
-import ktb3.full.community.dto.page.Sort;
-import ktb3.full.community.repository.base.CrudRepository;
+import ktb3.full.community.domain.entity.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends CrudRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
-    PageResponse<Post> findAll(PageRequest pageRequest, Sort sort);
 }

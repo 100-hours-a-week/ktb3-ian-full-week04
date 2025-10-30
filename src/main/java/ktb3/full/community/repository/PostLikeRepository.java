@@ -1,14 +1,7 @@
 package ktb3.full.community.repository;
 
-import ktb3.full.community.domain.PostLike;
+import ktb3.full.community.domain.entity.PostLike;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
-public interface PostLikeRepository {
-
-    boolean existsAndLiked(long userId, long postId);
-
-    void saveOrUpdate(PostLike postLike);
-
-    Optional<PostLike> findByUserAndPostId(long userId, long postId);
+public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 }
