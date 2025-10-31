@@ -1,22 +1,93 @@
 package ktb3.full.community.service;
 
+import ktb3.full.community.common.exception.CommentNotFoundException;
+import ktb3.full.community.common.exception.base.NotFoundException;
 import ktb3.full.community.domain.Comment;
+import ktb3.full.community.domain.Post;
+import ktb3.full.community.domain.User;
 import ktb3.full.community.dto.page.PageRequest;
 import ktb3.full.community.dto.page.PageResponse;
 import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.CommentResponse;
-import ktb3.full.community.service.base.Findable;
+import ktb3.full.community.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface CommentService extends Findable<Comment, Long> {
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-    PageResponse<CommentResponse> getAllComments(long postId, PageRequest pageRequest);
+@RequiredArgsConstructor
+@Service
+public class CommentService {
 
-    CommentResponse getComment(long commentId);
+    private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final PostService postService;
 
-    CommentResponse createComment(long userId, long postId, CommentCreateRequest request);
+    private final Lock lock = new ReentrantLock();
 
-    CommentResponse updateComment(long userId, long commentId, CommentUpdateRequest request);
+    public PageResponse<CommentResponse> getAllComments(long postId, PageRequest pageRequest) {
+        PageResponse<Comment> commentsPageResponse = commentRepository.findAll(postId, pageRequest);
+        List<CommentResponse> responses = commentsPageResponse.getContent().stream().map(CommentResponse::from).toList();
 
-    void deleteComment(long userId, long commentId);
+        return PageResponse.to(commentsPageResponse, responses);
+    }
+
+    public CommentResponse getComment(long commentId) {
+        Comment comment = getOrThrow(commentId);
+        return CommentResponse.from(comment);
+    }
+
+    public CommentResponse createComment(long userId, long postId, CommentCreateRequest request) {
+        User user = userService.getOrThrow(userId);
+        Post post = postService.getOrThrow(postId);
+        Comment comment = request.toEntity(user, post);
+
+        lock.lock();
+        try {
+            post.increaseCommentCount();
+        } finally {
+            lock.unlock();
+        }
+
+        commentRepository.save(comment);
+
+        return CommentResponse.from(comment);
+    }
+
+    public CommentResponse updateComment(long userId, long commentId, CommentUpdateRequest request) {
+        Comment comment = getOrThrow(commentId);
+        userService.validatePermission(userId, comment.getUser().getUserId());
+
+        if (request.getContent() != null) {
+            comment.updateContent(request.getContent());
+        }
+
+        commentRepository.update(comment);
+
+        return CommentResponse.from(comment);
+    }
+
+    public void deleteComment(long userId, long commentId) {
+        // soft delete
+        Comment comment = getOrThrow(commentId);
+        userService.validatePermission(userId, comment.getUser().getUserId());
+        comment.delete();
+
+        lock.lock();
+        try {
+            comment.getPost().decreaseCommentCount();
+        } finally {
+            lock.unlock();
+        }
+
+        commentRepository.update(comment);
+    }
+
+    public Comment getOrThrow(Long commentId) throws NotFoundException {
+        return commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+    }
 }

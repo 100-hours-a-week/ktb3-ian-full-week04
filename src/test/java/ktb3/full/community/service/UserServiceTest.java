@@ -1,4 +1,4 @@
-package ktb3.full.community.service.impl;
+package ktb3.full.community.service;
 
 import ktb3.full.community.domain.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
@@ -6,19 +6,18 @@ import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.infrastructure.database.identifier.LongIdentifierGenerator;
 import ktb3.full.community.infrastructure.database.table.InMemoryUserTable;
 import ktb3.full.community.repository.impl.UserMemoryRepository;
-import ktb3.full.community.service.UserService;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserServiceImplTest {
+class UserServiceTest {
 
     private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
     private final InMemoryUserTable userTable = new InMemoryUserTable(userIdentifierGenerator);
     private final UserMemoryRepository userRepository = new UserMemoryRepository(userTable);
-    private final UserService userService = new UserServiceImpl(userRepository);
+    private final UserService userService = new UserService(userRepository);
 
     @RepeatedTest(value = 10)
     void signUp_ThreadSafe() throws InterruptedException {
