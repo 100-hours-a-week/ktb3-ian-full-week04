@@ -8,7 +8,7 @@ import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.CommentResponse;
-import ktb3.full.community.repository.jpa.CommentRepository;
+import ktb3.full.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

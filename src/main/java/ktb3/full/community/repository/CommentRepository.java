@@ -1,4 +1,4 @@
-package ktb3.full.community.repository.jpa;
+package ktb3.full.community.repository;
 
 import ktb3.full.community.domain.entity.Comment;
 import org.springframework.data.domain.Page;

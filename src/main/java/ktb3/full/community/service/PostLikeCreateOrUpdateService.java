@@ -4,7 +4,7 @@ import ktb3.full.community.domain.entity.Post;
 import ktb3.full.community.domain.entity.PostLike;
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.response.PostLikeRespnose;
-import ktb3.full.community.repository.jpa.PostLikeRepository;
+import ktb3.full.community.repository.PostLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -9,7 +9,7 @@ import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
-import ktb3.full.community.repository.jpa.UserRepository;
+import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

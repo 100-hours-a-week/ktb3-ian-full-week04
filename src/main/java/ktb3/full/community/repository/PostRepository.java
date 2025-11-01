@@ -1,4 +1,4 @@
-package ktb3.full.community.repository.jpa;
+package ktb3.full.community.repository;
 
 import jakarta.persistence.LockModeType;
 import ktb3.full.community.domain.entity.Post;

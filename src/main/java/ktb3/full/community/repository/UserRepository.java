@@ -1,4 +1,4 @@
-package ktb3.full.community.repository.jpa;
+package ktb3.full.community.repository;
 
 import ktb3.full.community.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,14 +2,12 @@ package ktb3.full.community.service;
 
 import ktb3.full.community.common.exception.PostNotFoundException;
 import ktb3.full.community.domain.entity.Post;
-import ktb3.full.community.domain.entity.PostLike;
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.PostDetailResponse;
-import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.dto.response.PostResponse;
-import ktb3.full.community.repository.jpa.PostRepository;
+import ktb3.full.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
