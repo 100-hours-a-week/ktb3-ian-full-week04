@@ -30,7 +30,7 @@ class CommentServiceTest {
     @Autowired
     private CommentService commentService;
 
-    private final User user = User.create("test@test.com", "Test1234!", "testNickname", "");
+    private final User user = User.create("test@test.com", "Test1234!", "testName", "");
     private final Post post = Post.create(user, "testTitle", "testContent", "");
 
     @BeforeEach

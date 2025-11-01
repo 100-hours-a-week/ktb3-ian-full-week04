@@ -29,7 +29,7 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.create("test@test.com", "Test1234!", "testNickname", "");
+        user = User.create("test@test.com", "Test1234!", "testName", "");
         post = Post.create(user, "testTitle", "testContent", "");
         userRepository.save(user);
         postRepository.save(post);

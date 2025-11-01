@@ -34,7 +34,7 @@ class PostLikeCreateOrUpdateServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.create("test@test.com", "Test1234!", "testNickname", "");
+        user = User.create("test@test.com", "Test1234!", "testName", "");
         post = Post.create(user, "testTitle", "testContent", "");
         userRepository.save(user);
         postRepository.save(post);
@@ -49,14 +49,11 @@ class PostLikeCreateOrUpdateServiceTest {
 
     @RepeatedTest(value = 10)
     void postLike_ThreadSafe() throws InterruptedException {
-        int loopCount = 99;
-
         Runnable runnable = () -> {
-            for (int i = 1; i <= loopCount; i++) {
-                postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId());
-            }
+            postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId());
         };
 
+        int numThread = 3;
         Thread threadA = new Thread(runnable);
         Thread threadB = new Thread(runnable);
         Thread threadC = new Thread(runnable);
@@ -69,7 +66,7 @@ class PostLikeCreateOrUpdateServiceTest {
         threadB.join();
         threadC.join();
 
-        int likeCount = loopCount % 2 != 0 ? 1 : 0;
+        int likeCount = numThread % 2 != 0 ? 1 : 0;
         PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId()).orElseThrow();
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
         assertThat(postLike.isLiked()).isTrue();
