@@ -1,6 +1,6 @@
 package ktb3.full.community.service;
 
-import ktb3.full.community.repository.jpa.PostLikeRepository;
+import ktb3.full.community.repository.PostLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

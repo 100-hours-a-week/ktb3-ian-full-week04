@@ -2,7 +2,7 @@ package ktb3.full.community.service;
 
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
-import ktb3.full.community.repository.jpa.UserRepository;
+import ktb3.full.community.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
