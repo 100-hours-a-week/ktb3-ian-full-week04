@@ -26,7 +26,7 @@ public class CommentService {
     private final PostService postService;
 
     public PagedModel<CommentResponse> getAllComments(long postId, Pageable pageable) {
-        Page<Comment> commentsPageResponse = commentRepository.findByPostId(postId, pageable);
+        Page<Comment> commentsPageResponse = commentRepository.findAllLatestByPostId(postId, pageable);
         return new PagedModel<>(commentsPageResponse.map(CommentResponse::from));
     }
 
