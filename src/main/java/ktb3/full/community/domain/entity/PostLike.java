@@ -3,6 +3,7 @@ package ktb3.full.community.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,16 @@ import java.time.LocalDateTime;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
+@Table(
+        name = "post_like",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_post",
+                        columnNames = {"user_id", "post_id"}
+                )
+        }
+)
 @Entity
 public class PostLike {
 

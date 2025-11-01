@@ -1,7 +1,7 @@
 package ktb3.full.community.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +20,6 @@ public class UserProfileResponse {
     private final String profileImage;
 
     public static UserProfileResponse from(User user) {
-        return new UserProfileResponse(user.getUserId(), user.getNickname(), user.getProfileImage());
+        return new UserProfileResponse(user.getId(), user.getNickname(), user.getProfileImageUrl());
     }
 }

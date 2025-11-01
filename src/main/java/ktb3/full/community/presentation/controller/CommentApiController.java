@@ -3,8 +3,6 @@ package ktb3.full.community.presentation.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.resolver.Authentication;
-import ktb3.full.community.dto.page.PageRequest;
-import ktb3.full.community.dto.page.PageResponse;
 import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
@@ -13,6 +11,8 @@ import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.CommentApi;
 import ktb3.full.community.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +27,10 @@ public class CommentApiController implements CommentApi {
     private final CommentService commentService;
 
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiSuccessResponse<PageResponse<CommentResponse>>> getAllComments(
-            @Valid PageRequest pageRequest,
+    public ResponseEntity<ApiSuccessResponse<Page<CommentResponse>>> getAllComments(
+            @Valid Pageable pageable,
             @Positive @PathVariable("postId") long postId) {
-        PageResponse<CommentResponse> response = commentService.getAllComments(postId, pageRequest);
+        Page<CommentResponse> response = commentService.getAllComments(postId, pageable);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }

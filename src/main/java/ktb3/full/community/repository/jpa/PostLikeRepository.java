@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 
-    @Query("select pl from PostLike pl where pl.user.id = :userId and pl.post.id = :postId")
-    boolean existsAndLiked(@Param("userId") long userID, @Param("postId") long postID);
+    @Query("select pl.isLiked from PostLike pl where pl.user.id = :userId and pl.post.id = :postId")
+    Optional<Boolean> existsAndLiked(@Param("userId") long userId, @Param("postId") long postId);
 
-    Optional<PostLike> findByUserIdAndPostId(long userId, long postId);
+    Optional<PostLike> findByUserIdAndPostId(@Param("userId") long userId, @Param("postId") long postId);
 }

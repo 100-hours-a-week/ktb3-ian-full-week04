@@ -1,7 +1,9 @@
 package ktb3.full.community.service;
 
 import ktb3.full.community.domain.entity.Post;
+import ktb3.full.community.domain.entity.PostLike;
 import ktb3.full.community.domain.entity.User;
+import ktb3.full.community.repository.jpa.PostLikeRepository;
 import ktb3.full.community.repository.jpa.PostRepository;
 import ktb3.full.community.repository.jpa.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class PostServiceTest {
+class PostLikeCreateOrUpdateServiceTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,7 +24,10 @@ class PostServiceTest {
     private PostRepository postRepository;
 
     @Autowired
-    private PostService postService;
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
+    private PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
 
     private User user;
     private Post post;
@@ -37,21 +42,21 @@ class PostServiceTest {
 
     @AfterEach
     void tearDown() {
+        postLikeRepository.deleteAll();
         postRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @RepeatedTest(value = 10)
-    void viewCount_ThreadSafe() throws InterruptedException {
-        int loopCount = 10;
+    void postLike_ThreadSafe() throws InterruptedException {
+        int loopCount = 99;
 
         Runnable runnable = () -> {
             for (int i = 1; i <= loopCount; i++) {
-                postService.getPost(user.getId(), post.getId());
+                postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId());
             }
         };
 
-        int numThreads = 3;
         Thread threadA = new Thread(runnable);
         Thread threadB = new Thread(runnable);
         Thread threadC = new Thread(runnable);
@@ -64,8 +69,10 @@ class PostServiceTest {
         threadB.join();
         threadC.join();
 
-        int expectedSize = loopCount * numThreads;
+        int likeCount = loopCount % 2 != 0 ? 1 : 0;
+        PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId()).orElseThrow();
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(foundPost.getViewCount()).isEqualTo(expectedSize);
+        assertThat(postLike.isLiked()).isTrue();
+        assertThat(foundPost.getLikeCount()).isEqualTo(likeCount);
     }
 }
