@@ -14,8 +14,8 @@ import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.*;
 import ktb3.full.community.dto.session.LoggedInUser;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +31,7 @@ public interface CommentApi {
             @ApiResponse(responseCode = "404", description = "댓글을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Page<CommentResponse>>> getAllComments(
+    ResponseEntity<ApiSuccessResponse<PagedModel<CommentResponse>>> getAllComments(
             @Valid Pageable pageable,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 

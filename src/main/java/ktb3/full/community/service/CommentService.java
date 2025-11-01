@@ -12,6 +12,7 @@ import ktb3.full.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +25,9 @@ public class CommentService {
     private final UserService userService;
     private final PostService postService;
 
-    public Page<CommentResponse> getAllComments(long postId, Pageable pageable) {
+    public PagedModel<CommentResponse> getAllComments(long postId, Pageable pageable) {
         Page<Comment> commentsPageResponse = commentRepository.findByPostId(postId, pageable);
-        return commentsPageResponse.map(CommentResponse::from);
+        return new PagedModel<>(commentsPageResponse.map(CommentResponse::from));
     }
 
     public CommentResponse getComment(long commentId) {

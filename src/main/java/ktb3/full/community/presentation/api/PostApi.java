@@ -14,8 +14,8 @@ import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.*;
 import ktb3.full.community.dto.session.LoggedInUser;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +29,7 @@ public interface PostApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Page<PostResponse>>> getAllPosts(@Valid Pageable pageable);
+    ResponseEntity<ApiSuccessResponse<PagedModel<PostResponse>>> getAllPosts(@Valid Pageable pageable);
 
     @Operation(summary = "게시글 상세 조회", description = "ID를 이용해 특정 게시글을 조회합니다.")
     @ApiResponses(value = {

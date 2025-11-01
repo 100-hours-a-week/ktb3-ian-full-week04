@@ -11,8 +11,8 @@ import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.CommentApi;
 import ktb3.full.community.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +27,10 @@ public class CommentApiController implements CommentApi {
     private final CommentService commentService;
 
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiSuccessResponse<Page<CommentResponse>>> getAllComments(
+    public ResponseEntity<ApiSuccessResponse<PagedModel<CommentResponse>>> getAllComments(
             @Valid Pageable pageable,
             @Positive @PathVariable("postId") long postId) {
-        Page<CommentResponse> response = commentService.getAllComments(postId, pageable);
+        PagedModel<CommentResponse> response = commentService.getAllComments(postId, pageable);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
