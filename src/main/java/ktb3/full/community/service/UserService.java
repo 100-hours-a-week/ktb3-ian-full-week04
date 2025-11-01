@@ -1,7 +1,7 @@
 package ktb3.full.community.service;
 
 import ktb3.full.community.common.exception.*;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
@@ -9,14 +9,16 @@ import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
-import ktb3.full.community.repository.UserRepository;
+import ktb3.full.community.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class UserService {
 
@@ -32,10 +34,11 @@ public class UserService {
         return new UserValidationResponse(!userRepository.existsByNickname(nickname));
     }
 
+    @Transactional
     public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
-        return userRepository.save(request.toEntity());
+        return userRepository.save(request.toUserEntity()).getId();
     }
 
     public UserAccountResponse login(UserLoginRequest request) {
@@ -59,6 +62,7 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
+    @Transactional
     public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
@@ -76,24 +80,20 @@ public class UserService {
             user.updateProfileImage(request.getProfileImage());
         }
 
-        userRepository.update(user);
-
         return UserAccountResponse.from(user);
     }
 
+    @Transactional
     public void updatePassword(long userId, UserPasswordUpdateRequest request) {
         User user = getOrThrow(userId);
         user.updatePassword(request.getPassword());
-
-        userRepository.update(user);
     }
 
+    @Transactional
     public void deleteAccount(long userId) {
         // soft delete
         User user = getOrThrow(userId);
         user.delete();
-
-        userRepository.update(user);
     }
 
     public void validatePermission(long requestUserId, long actualUserId) {

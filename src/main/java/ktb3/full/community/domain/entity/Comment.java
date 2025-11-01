@@ -3,7 +3,6 @@ package ktb3.full.community.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@ToString
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

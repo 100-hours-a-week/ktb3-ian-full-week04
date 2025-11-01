@@ -3,9 +3,6 @@ package ktb3.full.community.presentation.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.resolver.Authentication;
-import ktb3.full.community.dto.page.PageRequest;
-import ktb3.full.community.dto.page.PageResponse;
-import ktb3.full.community.dto.page.Sort;
 import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
@@ -14,8 +11,11 @@ import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.dto.response.PostResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.PostApi;
+import ktb3.full.community.service.PostLikeCreateOrUpdateService;
 import ktb3.full.community.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +29,11 @@ import java.net.URI;
 public class PostApiController implements PostApi {
 
     private final PostService postService;
+    private final PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
 
     @GetMapping
-    public ResponseEntity<ApiSuccessResponse<PageResponse<PostResponse>>> getAllPosts(@Valid PageRequest pageRequest, @Valid Sort sort) {
-        PageResponse<PostResponse> response = postService.getAllPosts(pageRequest, sort);
+    public ResponseEntity<ApiSuccessResponse<Page<PostResponse>>> getAllPosts(@Valid Pageable pageable) {
+        Page<PostResponse> response = postService.getAllPosts(pageable);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
@@ -78,7 +79,7 @@ public class PostApiController implements PostApi {
     public ResponseEntity<ApiSuccessResponse<PostLikeRespnose>> likePost(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId) {
-        PostLikeRespnose postLikeRespnose = postService.createOrUpdateLiked(loggedInUser.getUserId(), postId);
+        PostLikeRespnose postLikeRespnose = postLikeCreateOrUpdateService.createOrUpdate(loggedInUser.getUserId(), postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(postLikeRespnose));
     }

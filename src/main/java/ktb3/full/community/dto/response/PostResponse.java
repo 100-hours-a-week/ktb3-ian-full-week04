@@ -2,7 +2,7 @@ package ktb3.full.community.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ktb3.full.community.domain.Post;
+import ktb3.full.community.domain.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class PostResponse {
 
     public static PostResponse from(Post post) {
         return builder()
-                .postId(post.getPostId())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .author(post.getUser().getNickname())
                 .createdDate(post.getCreatedAt())

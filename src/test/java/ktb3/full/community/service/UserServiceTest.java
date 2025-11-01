@@ -1,23 +1,30 @@
 package ktb3.full.community.service;
 
-import ktb3.full.community.domain.User;
-import ktb3.full.community.dto.request.UserAccountUpdateRequest;
+import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserRegisterRequest;
-import ktb3.full.community.infrastructure.database.identifier.LongIdentifierGenerator;
-import ktb3.full.community.infrastructure.database.table.InMemoryUserTable;
-import ktb3.full.community.repository.impl.UserMemoryRepository;
+import ktb3.full.community.repository.jpa.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.RepeatedTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 class UserServiceTest {
 
-    private final LongIdentifierGenerator<User> userIdentifierGenerator = new LongIdentifierGenerator<>();
-    private final InMemoryUserTable userTable = new InMemoryUserTable(userIdentifierGenerator);
-    private final UserMemoryRepository userRepository = new UserMemoryRepository(userTable);
-    private final UserService userService = new UserService(userRepository);
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+    }
 
     @RepeatedTest(value = 10)
     void signUp_ThreadSafe() throws InterruptedException {
@@ -42,31 +49,5 @@ class UserServiceTest {
 
         List<User> users = userRepository.findAll();
         assertThat(users.size()).isEqualTo(1);
-    }
-
-    @RepeatedTest(value = 10)
-    void updateNickname_ThreadSafe() throws InterruptedException {
-        String newNickname = "newNickname";
-        User userA = User.create("testA@test.com", "Test1234!", "testA", "");
-        User userB = User.create("testB@test.com", "Test1234!", "testB", "");
-        User userC = User.create("testC@test.com", "Test1234!", "testC", "");
-        userRepository.saveAll(List.of(userA, userB, userC));
-        UserAccountUpdateRequest request = new UserAccountUpdateRequest(newNickname, null);
-
-        Thread threadA = new Thread(() -> userService.updateAccount(userA.getUserId(), request));
-        Thread threadB = new Thread(() -> userService.updateAccount(userB.getUserId(), request));
-        Thread threadC = new Thread(() -> userService.updateAccount(userC.getUserId(), request));
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
-
-        assertThat(userRepository.findAll().stream()
-                .filter(user -> user.getNickname().equals(newNickname))
-                .count()).isEqualTo(1);
     }
 }

@@ -5,15 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
 import ktb3.full.community.common.annotation.constraint.NicknamePattern;
 import ktb3.full.community.common.annotation.constraint.PasswordPattern;
-import ktb3.full.community.domain.User;
+import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static ktb3.full.community.common.Constants.*;
 
 @Schema(title = "회원 등록 요청 DTO")
-@ToString
 @Getter
 @RequiredArgsConstructor
 public class UserRegisterRequest {
@@ -36,7 +34,7 @@ public class UserRegisterRequest {
     @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
     private final String profileImage;
 
-    public User toEntity() {
+    public User toUserEntity() {
         return User.create(email, password, nickname, profileImage);
     }
 }
