@@ -11,6 +11,7 @@ import ktb3.full.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,9 @@ public class PostService {
     private final UserService userService;
     private final PostLikeService postLikeService;
 
-    public Page<PostResponse> getAllPosts(Pageable pageable) {
+    public PagedModel<PostResponse> getAllPosts(Pageable pageable) {
         Page<Post> postPages = postRepository.findAll(pageable);
-        return postPages.map(PostResponse::from);
+        return new PagedModel<>(postPages.map(PostResponse::from));
     }
 
     @Transactional

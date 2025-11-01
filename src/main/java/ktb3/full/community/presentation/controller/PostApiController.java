@@ -14,8 +14,8 @@ import ktb3.full.community.presentation.api.PostApi;
 import ktb3.full.community.service.PostLikeCreateOrUpdateService;
 import ktb3.full.community.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +32,8 @@ public class PostApiController implements PostApi {
     private final PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
 
     @GetMapping
-    public ResponseEntity<ApiSuccessResponse<Page<PostResponse>>> getAllPosts(@Valid Pageable pageable) {
-        Page<PostResponse> response = postService.getAllPosts(pageable);
+    public ResponseEntity<ApiSuccessResponse<PagedModel<PostResponse>>> getAllPosts(@Valid Pageable pageable) {
+        PagedModel<PostResponse> response = postService.getAllPosts(pageable);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
