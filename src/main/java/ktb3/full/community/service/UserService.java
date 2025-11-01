@@ -14,17 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-
-    private final Lock lock = new ReentrantLock();
 
     public UserValidationResponse validateEmailAvailable(String email) {
         return new UserValidationResponse(!userRepository.existsByEmail(email));
@@ -67,13 +62,8 @@ public class UserService {
         User user = getOrThrow(userId);
 
         if (request.getNickname() != null) {
-            lock.lock();
-            try {
-                validateNicknameDuplication(request.getNickname());
-                user.updateNickname(request.getNickname());
-            } finally {
-                lock.unlock();
-            }
+            validateNicknameDuplication(request.getNickname());
+            user.updateNickname(request.getNickname());
         }
 
         if (request.getProfileImage() != null) {

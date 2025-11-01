@@ -41,7 +41,7 @@ class UserServiceUpdateNicknameSyncTest {
 
     @RepeatedTest(value = 10)
     void updateNickname_ThreadSafe() throws InterruptedException {
-        String newNickname = "newNickname";
+        String newNickname = "newName";
         UserAccountUpdateRequest request = new UserAccountUpdateRequest(newNickname, null);
 
         Thread threadA = new Thread(() -> userService.updateAccount(userA.getId(), request));
@@ -57,7 +57,7 @@ class UserServiceUpdateNicknameSyncTest {
         threadC.join();
 
         assertThat(userRepository.findAll().stream()
-                .filter(user -> user.getNickname().equals(newNickname))
+                .filter(user -> newNickname.equals(user.getNickname().trim()))
                 .count()).isEqualTo(1);
     }
 }
