@@ -37,11 +37,11 @@ public class PostLike {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
+    @Column(name = "is_liked", nullable = false)
     private boolean isLiked;
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     public static PostLike create(User user, Post post) {

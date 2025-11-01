@@ -23,10 +23,10 @@ public class Comment extends AuditTime {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
     public static Comment create(User user, Post post, String content) {
