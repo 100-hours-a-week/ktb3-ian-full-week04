@@ -19,25 +19,25 @@ public class Post extends AuditTime {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false, length = 26)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @Column
     private String image;
 
-    @Column(nullable = false)
-    private int likeCount;
-
-    @Column(nullable = false)
-    private int commentCount;
-
-    @Column(nullable = false)
+    @Column(name = "view_count", nullable = false)
     private int viewCount;
 
-    @Column(nullable = false)
+    @Column(name = "comment_count", nullable = false)
+    private int commentCount;
+
+    @Column(name = "like_count", nullable = false)
+    private int likeCount;
+
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
     public static Post create(User user, String title, String content, String image) {

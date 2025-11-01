@@ -16,16 +16,16 @@ public class User extends AuditTime {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false, unique = true, columnDefinition = "CHAR(10)")
     private String nickname;
 
-    @Column(name = "profile_image_url")
+    @Column(name = "profile_image_url", length = 255)
     private String profileImageUrl;
 
     @Column(name = "is_deleted", nullable = false)

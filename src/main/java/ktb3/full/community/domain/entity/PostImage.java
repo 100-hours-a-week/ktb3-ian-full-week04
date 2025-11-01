@@ -22,13 +22,16 @@ public class PostImage {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
-    private String imageUrl;
+    @Column(name = "image_file_path", nullable = false, length = 255)
+    private String imageFilePath;
 
-    @Column(nullable = false)
-    private String imageName;
+    @Column(name = "original_image_file_name", nullable = false, length = 255)
+    private String originalImageFileName;
+
+    @Column(name = "stored_image_file_name", nullable = false, columnDefinition = "BINARY(16)")
+    private String storedImageFileName;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
