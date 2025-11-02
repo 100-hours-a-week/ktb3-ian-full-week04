@@ -20,10 +20,11 @@ public class PostLikeCreateOrUpdateService {
 
     @Transactional
     public PostLikeRespnose createOrUpdate(long userId, long postId) {
+        Post post = postService.getForUpdateOrThrow(postId);
+
         PostLike postLike = postLikeRepository.findByUserIdAndPostId(userId, postId)
                 .orElseGet(() -> {
                     User user = userService.getOrThrow(userId);
-                    Post post = postService.getForUpdateOrThrow(postId);
                     return postLikeRepository.save(PostLike.create(user, post));
                 });
 
