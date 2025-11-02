@@ -14,12 +14,16 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    @NonNull
+    @Query(name = "Post.findByIdActive")
+    Optional<Post> findById(@NonNull @Param("id") Long id);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select p from Post p where p.id = :id")
+    @Query(name = "Post.findByIdActive")
     Optional<Post> findByIdForUpdate(@Param("id") Long id);
 
     @NonNull
-    @Query(value = "select p from Post p left join fetch p.user",
-            countQuery = "select count(p) from Post p")
+    @Query(value = "select p from Post p left join fetch p.user where p.isDeleted = false",
+            countQuery = "select count(p) from Post p where p.isDeleted = false")
     Page<Post> findAll(@NonNull Pageable pageable);
 }
