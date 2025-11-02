@@ -3,6 +3,8 @@ package ktb3.full.community.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -43,6 +45,9 @@ public class Post extends AuditTime {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
     public static Post create(User user, String title, String content, String image) {
         return Post.builder()
@@ -93,6 +98,7 @@ public class Post extends AuditTime {
     public void delete() {
         this.isDeleted = true;
         this.auditDeletedAt();
+        comments.forEach(Comment::delete);
     }
 
     public void deleteUser() {
