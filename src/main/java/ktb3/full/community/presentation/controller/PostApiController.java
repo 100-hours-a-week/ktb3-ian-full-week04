@@ -11,6 +11,7 @@ import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.dto.response.PostResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.PostApi;
+import ktb3.full.community.service.PostDeleteService;
 import ktb3.full.community.service.PostLikeCreateOrUpdateService;
 import ktb3.full.community.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.net.URI;
 public class PostApiController implements PostApi {
 
     private final PostService postService;
+    private final PostDeleteService postDeleteService;
     private final PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
 
     @GetMapping
@@ -70,7 +72,7 @@ public class PostApiController implements PostApi {
     public ResponseEntity<ApiSuccessResponse<Void>> deletePost(
             @Authentication LoggedInUser loggedInUser,
             @Positive @PathVariable("postId") long postId) {
-        postService.deletePost(loggedInUser.getUserId(), postId);
+        postDeleteService.deletePost(loggedInUser.getUserId(), postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }

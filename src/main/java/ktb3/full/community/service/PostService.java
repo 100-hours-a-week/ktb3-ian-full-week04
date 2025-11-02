@@ -72,14 +72,6 @@ public class PostService {
         return PostDetailResponse.from(post, liked);
     }
 
-    @Transactional
-    public void deletePost(long userId, long postId) {
-        // soft delete
-        Post post = getOrThrow(postId);
-        userService.validatePermission(userId, post.getUser().getId());
-        post.delete();
-    }
-
     public Post getOrThrow(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
