@@ -9,6 +9,7 @@ import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.AuthenticatedUserApi;
+import ktb3.full.community.service.UserDeleteService;
 import ktb3.full.community.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticatedUserApiController implements AuthenticatedUserApi {
 
     private final UserService userService;
+    private final UserDeleteService userDeleteService;
 
     @GetMapping
     public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser) {
@@ -55,7 +57,7 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
 
     @DeleteMapping
     public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session) {
-        userService.deleteAccount(loggedInUser.getUserId());
+        userDeleteService.deleteAccount(loggedInUser.getUserId());
         session.invalidate();
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());

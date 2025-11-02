@@ -72,6 +72,11 @@ public class CommentService {
         commentRepository.deleteAllByPostId(postId);
     }
 
+    @Transactional
+    public void deleteAllCommentByUserId(long userId) {
+        commentRepository.deleteAllByUserId(userId);
+    }
+
     public Comment getOrThrow(Long commentId) throws NotFoundException {
         return commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
