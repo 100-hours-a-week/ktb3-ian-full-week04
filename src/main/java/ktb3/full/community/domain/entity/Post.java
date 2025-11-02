@@ -7,6 +7,10 @@ import lombok.*;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NamedQuery(
+        name = "Post.findByIdActive",
+        query = "select p from Post p where p.id = :id and p.isDeleted = false"
+)
 @Entity
 public class Post extends AuditTime {
 
