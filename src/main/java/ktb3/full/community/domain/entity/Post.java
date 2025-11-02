@@ -90,4 +90,8 @@ public class Post extends AuditTime {
         this.isDeleted = true;
         this.auditDeletedAt();
     }
+
+    public void deleteUser() {
+        this.user = null;
+    }
 }

@@ -47,4 +47,8 @@ public class Comment extends AuditTime {
         this.isDeleted = true;
         this.auditDeletedAt();
     }
+
+    public void deleteUser() {
+        this.user = null;
+    }
 }

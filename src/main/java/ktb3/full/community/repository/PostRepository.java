@@ -19,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdForUpdate(@Param("id") Long id);
 
     @NonNull
-    @Query(value = "select p from Post p join fetch p.user",
+    @Query(value = "select p from Post p left join fetch p.user",
             countQuery = "select count(p) from Post p")
     Page<Post> findAll(@NonNull Pageable pageable);
 }
