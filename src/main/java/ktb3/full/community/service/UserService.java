@@ -79,13 +79,6 @@ public class UserService {
         user.updatePassword(request.getPassword());
     }
 
-    @Transactional
-    public void deleteAccount(long userId) {
-        // soft delete
-        User user = getOrThrow(userId);
-        user.delete();
-    }
-
     public void validatePermission(long requestUserId, long actualUserId) {
         if (requestUserId != actualUserId) {
             throw new NoPermissionException();

@@ -72,6 +72,11 @@ public class PostService {
         return PostDetailResponse.from(post, liked);
     }
 
+    @Transactional
+    public void deleteAllPostByUserId(long userId) {
+        postRepository.deleteAllByUserId(userId);
+    }
+
     public Post getOrThrow(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);

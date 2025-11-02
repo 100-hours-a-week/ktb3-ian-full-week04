@@ -24,4 +24,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query(value = "update Comment c set c.isDeleted = true, c.deletedAt = CURRENT_TIMESTAMP where c.post.id = :postId")
     void deleteAllByPostId(@Param("postId") long postId);
+
+    @Modifying
+    @Query(value = "update Comment c set c.isDeleted = true, c.deletedAt = CURRENT_TIMESTAMP where c.user.id = :userId")
+    void deleteAllByUserId(@Param("userId") long userId);
 }
