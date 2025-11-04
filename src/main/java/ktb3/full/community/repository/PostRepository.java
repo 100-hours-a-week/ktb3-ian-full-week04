@@ -23,6 +23,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(name = "Post.findByIdActive")
     Optional<Post> findByIdForUpdate(@Param("id") Long id);
 
+    @Modifying
+    @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")
+    void increaseViewCount(@Param("id") Long id);
+
     @NonNull
     @Query(value = "select p from Post p left join fetch p.user where p.isDeleted = false",
             countQuery = "select count(p) from Post p where p.isDeleted = false")
