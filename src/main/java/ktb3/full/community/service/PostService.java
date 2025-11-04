@@ -31,12 +31,9 @@ public class PostService {
 
     @Transactional
     public PostDetailResponse getPost(long userId, long postId) {
-        Post post = getForUpdateOrThrow(postId);
-
-        post.increaseViewCount();
-
+        postRepository.increaseViewCount(postId);
+        Post post = getOrThrow(postId);
         boolean liked = postLikeService.isLiked(userId, postId);
-
         return PostDetailResponse.from(post, liked);
     }
 
