@@ -29,6 +29,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAll(@NonNull Pageable pageable);
 
     @Modifying
-    @Query(value = "update Post p set p.isDeleted = true, p.deletedAt = CURRENT_TIMESTAMP where p.user.id = :userId")
+    @Query(value = "update Post p set p.user = null where p.user.id = :userId")
     void deleteAllByUserId(@Param("userId") long userId);
 }
