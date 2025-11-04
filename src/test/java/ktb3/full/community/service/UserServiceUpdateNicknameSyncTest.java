@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,21 +42,16 @@ class UserServiceUpdateNicknameSyncTest {
     }
 
     @RepeatedTest(value = 10)
-    void updateNickname_ThreadSafe() throws InterruptedException {
+    void updateNickname_ThreadSafe() {
         String newNickname = "newName";
         UserAccountUpdateRequest request = new UserAccountUpdateRequest(newNickname, null);
 
-        Thread threadA = new Thread(() -> userService.updateAccount(userA.getId(), request));
-        Thread threadB = new Thread(() -> userService.updateAccount(userB.getId(), request));
-        Thread threadC = new Thread(() -> userService.updateAccount(userC.getId(), request));
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
+        int numThread = 3;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            executor.submit(() -> userService.updateAccount(userA.getId(), request));
+            executor.submit(() -> userService.updateAccount(userB.getId(), request));
+            executor.submit(() -> userService.updateAccount(userC.getId(), request));
+        }
 
         assertThat(userRepository.findAll().stream()
                 .filter(user -> newNickname.equals(user.getNickname().trim()))

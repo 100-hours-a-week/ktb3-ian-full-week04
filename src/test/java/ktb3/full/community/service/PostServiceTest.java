@@ -10,6 +10,9 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -42,30 +45,15 @@ class PostServiceTest {
     }
 
     @RepeatedTest(value = 10)
-    void viewCount_ThreadSafe() throws InterruptedException {
-        int loopCount = 10;
-
-        Runnable runnable = () -> {
-            for (int i = 1; i <= loopCount; i++) {
-                postService.getPost(user.getId(), post.getId());
+    void viewCount_ThreadSafe() {
+        int numThread = 10;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            for (int i = 0; i < numThread; i++) {
+                executor.submit(() -> postService.getPost(user.getId(), post.getId()));
             }
-        };
+        }
 
-        int numThreads = 3;
-        Thread threadA = new Thread(runnable);
-        Thread threadB = new Thread(runnable);
-        Thread threadC = new Thread(runnable);
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
-
-        int expectedSize = loopCount * numThreads;
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(foundPost.getViewCount()).isEqualTo(expectedSize);
+        assertThat(foundPost.getViewCount()).isEqualTo(numThread);
     }
 }
