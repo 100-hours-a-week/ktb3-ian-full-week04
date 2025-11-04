@@ -12,6 +12,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,14 +34,17 @@ class PostLikeCreateOrUpdateServiceTest {
     @Autowired
     private PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
 
-    private User user;
+    int numThread = 1000;
+    private final List<User> users = new ArrayList<>();
     private Post post;
 
     @BeforeEach
     void setUp() {
-        user = User.create("test@test.com", "Test1234!", "testName", "");
-        post = Post.create(user, "testTitle", "testContent", "");
-        userRepository.save(user);
+        for (int i = 0; i < numThread; i++) {
+            users.add(User.create(i + "test@test.com", "Test1234!", "test" + i, ""));
+        }
+        post = Post.create(users.getFirst(), "testTitle", "testContent", "");
+        userRepository.saveAll(users);
         postRepository.save(post);
     }
 
@@ -50,18 +55,20 @@ class PostLikeCreateOrUpdateServiceTest {
         userRepository.deleteAll();
     }
 
-    @RepeatedTest(value = 10)
+    @RepeatedTest(value = 1)
     void postLike_ThreadSafe() {
-        int numThread = 9;
         try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
             for (int i = 0; i < numThread; i++) {
-                executor.submit(() -> postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId()));
+                int finalI = i;
+                executor.submit(() -> postLikeCreateOrUpdateService.createOrUpdate(users.get(finalI).getId(), post.getId()));
             }
         }
 
-        PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId()).orElseThrow();
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(postLike.isLiked()).isTrue();
-        assertThat(foundPost.getLikeCount()).isOne();
+        users.forEach(user -> {
+            PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId()).orElseThrow();
+            assertThat(postLike.isLiked()).isTrue();
+        });
+        assertThat(foundPost.getLikeCount()).isEqualTo(numThread);
     }
 }
