@@ -12,6 +12,9 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -48,28 +51,17 @@ class PostLikeCreateOrUpdateServiceTest {
     }
 
     @RepeatedTest(value = 10)
-    void postLike_ThreadSafe() throws InterruptedException {
-        Runnable runnable = () -> {
-            postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId());
-        };
+    void postLike_ThreadSafe() {
+        int numThread = 9;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            for (int i = 0; i < numThread; i++) {
+                executor.submit(() -> postLikeCreateOrUpdateService.createOrUpdate(user.getId(), post.getId()));
+            }
+        }
 
-        int numThread = 3;
-        Thread threadA = new Thread(runnable);
-        Thread threadB = new Thread(runnable);
-        Thread threadC = new Thread(runnable);
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
-
-        int likeCount = numThread % 2 != 0 ? 1 : 0;
         PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId()).orElseThrow();
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
         assertThat(postLike.isLiked()).isTrue();
-        assertThat(foundPost.getLikeCount()).isEqualTo(likeCount);
+        assertThat(foundPost.getLikeCount()).isOne();
     }
 }

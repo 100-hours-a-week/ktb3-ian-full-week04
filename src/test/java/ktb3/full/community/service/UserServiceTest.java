@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,25 +29,18 @@ class UserServiceTest {
     }
 
     @RepeatedTest(value = 10)
-    void signUp_ThreadSafe() throws InterruptedException {
+    void signUp_ThreadSafe() {
         String email = "test@test.com";
         String password = "Test1234!";
         String nickname = "test";
         UserRegisterRequest request = new UserRegisterRequest(email, password, nickname, "");
 
-        Runnable runnable = () -> userService.register(request);
-
-        Thread threadA = new Thread(runnable);
-        Thread threadB = new Thread(runnable);
-        Thread threadC = new Thread(runnable);
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
+        int numThread = 10;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            for (int i = 0; i < numThread; i++) {
+                executor.submit(() -> userService.register(request));
+            }
+        }
 
         List<User> users = userRepository.findAll();
         assertThat(users.size()).isEqualTo(1);

@@ -13,6 +13,9 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -47,59 +50,33 @@ class CommentServiceTest {
     }
 
     @RepeatedTest(value = 10)
-    void create_ThreadSafe() throws InterruptedException {
-        int loopCount = 10;
+    void create_ThreadSafe() {
+        CommentCreateRequest request = new CommentCreateRequest("testContent");
 
-        Runnable runnable = () -> {
-            for (int i = 1; i <= loopCount; i++) {
-                CommentCreateRequest request = new CommentCreateRequest("testContent");
-                commentService.createComment(user.getId(), post.getId(), request);
+        int numThread = 10;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            for (int i = 0; i < numThread; i++) {
+                executor.submit(() -> commentService.createComment(user.getId(), post.getId(), request));
             }
-        };
+        }
 
-        int numThreads = 3;
-        Thread threadA = new Thread(runnable);
-        Thread threadB = new Thread(runnable);
-        Thread threadC = new Thread(runnable);
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
-
-        int expectedSize = loopCount * numThreads;
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(foundPost.getCommentCount()).isEqualTo(expectedSize);
+        assertThat(foundPost.getCommentCount()).isEqualTo(numThread);
         assertThat(commentRepository.findAll().stream()
-                .filter(comment -> comment.getPost().getId().equals(foundPost.getId()))).hasSize(expectedSize);
+                .filter(comment -> comment.getPost().getId().equals(foundPost.getId()))).hasSize(numThread);
     }
 
     @RepeatedTest(value = 10)
-    void createAndDelete_ThreadSafe() throws InterruptedException {
-        int loopCount = 10;
+    void createAndDelete_ThreadSafe() {
+        CommentCreateRequest request = new CommentCreateRequest("testContent");
 
-        Runnable runnable = () -> {
-            for (int i = 1; i <= loopCount; i++) {
-                CommentCreateRequest request = new CommentCreateRequest("testContent");
+        int numThread = 10;
+        try (ExecutorService executor = Executors.newFixedThreadPool(numThread)) {
+            for (int i = 0; i < numThread; i++) {
                 CommentResponse response = commentService.createComment(user.getId(), post.getId(), request);
-                commentService.deleteComment(response.getUserId(), response.getCommentId());
+                executor.submit(() -> commentService.deleteComment(response.getUserId(), response.getCommentId()));
             }
-        };
-
-        Thread threadA = new Thread(runnable);
-        Thread threadB = new Thread(runnable);
-        Thread threadC = new Thread(runnable);
-
-        threadA.start();
-        threadB.start();
-        threadC.start();
-
-        threadA.join();
-        threadB.join();
-        threadC.join();
+        }
 
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
         assertThat(foundPost.getCommentCount()).isEqualTo(0);
