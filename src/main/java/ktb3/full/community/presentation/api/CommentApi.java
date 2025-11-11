@@ -13,7 +13,6 @@ import ktb3.full.community.common.annotation.resolver.Authentication;
 import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.*;
-import ktb3.full.community.dto.session.LoggedInUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +52,7 @@ public interface CommentApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
     })
     ResponseEntity<ApiSuccessResponse<CommentResponse>> createComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId,
             @Valid @RequestBody CommentCreateRequest request);
 
@@ -70,7 +69,7 @@ public interface CommentApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<CommentResponse>> updateComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId,
             @Valid @RequestBody CommentUpdateRequest request);
 
@@ -85,6 +84,6 @@ public interface CommentApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<Void>> deleteComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId);
 }

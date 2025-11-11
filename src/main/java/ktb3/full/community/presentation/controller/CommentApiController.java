@@ -7,7 +7,6 @@ import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.CommentResponse;
-import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.CommentApi;
 import ktb3.full.community.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -44,29 +43,29 @@ public class CommentApiController implements CommentApi {
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiSuccessResponse<CommentResponse>> createComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody CommentCreateRequest request) {
-        CommentResponse response = commentService.createComment(loggedInUser.getUserId(), postId, request);
+        CommentResponse response = commentService.createComment(loggedInUserId, postId, request);
         return ResponseEntity.created(URI.create(String.format("/comments/%d", response.getCommentId())))
                 .body(ApiSuccessResponse.of(response));
     }
 
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<ApiSuccessResponse<CommentResponse>> updateComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("commentId") long commentId,
             @Valid @RequestBody CommentUpdateRequest request) {
-        CommentResponse response = commentService.updateComment(loggedInUser.getUserId(), commentId, request);
+        CommentResponse response = commentService.updateComment(loggedInUserId, commentId, request);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiSuccessResponse<Void>> deleteComment(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("commentId") long commentId) {
-        commentService.deleteComment(loggedInUser.getUserId(), commentId);
+        commentService.deleteComment(loggedInUserId, commentId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }

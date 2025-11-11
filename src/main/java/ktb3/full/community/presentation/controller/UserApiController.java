@@ -1,6 +1,5 @@
 package ktb3.full.community.presentation.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
@@ -11,7 +10,6 @@ import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
-import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.UserApi;
 import ktb3.full.community.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-
-import static ktb3.full.community.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
 @Validated
 @RequiredArgsConstructor
@@ -53,9 +49,8 @@ public class UserApiController implements UserApi {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
+    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
         UserAccountResponse userAccountResponse = userService.login(userLoginRequest);
-        session.setAttribute(SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER, new LoggedInUser(userAccountResponse.getUserId()));
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(userAccountResponse));
     }

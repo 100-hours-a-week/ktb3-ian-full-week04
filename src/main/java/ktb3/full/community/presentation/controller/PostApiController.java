@@ -9,7 +9,6 @@ import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.PostDetailResponse;
 import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.dto.response.PostResponse;
-import ktb3.full.community.dto.session.LoggedInUser;
 import ktb3.full.community.presentation.api.PostApi;
 import ktb3.full.community.service.PostDeleteService;
 import ktb3.full.community.service.PostLikeCreateOrUpdateService;
@@ -42,46 +41,46 @@ public class PostApiController implements PostApi {
 
     @GetMapping("/{postId}")
     public ResponseEntity<ApiSuccessResponse<PostDetailResponse>> getPostDetail(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId) {
-        PostDetailResponse response = postService.getPost(loggedInUser.getUserId(), postId);
+        PostDetailResponse response = postService.getPost(loggedInUserId, postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
 
     @PostMapping
     public ResponseEntity<ApiSuccessResponse<PostDetailResponse>> createPost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Valid @RequestBody PostCreateRequest request) {
-        PostDetailResponse response = postService.createPost(loggedInUser.getUserId(), request);
+        PostDetailResponse response = postService.createPost(loggedInUserId, request);
         return ResponseEntity.created(URI.create(String.format("/posts/%d", response.getPostId())))
                 .body(ApiSuccessResponse.of(response));
     }
 
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiSuccessResponse<PostDetailResponse>> updatePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody PostUpdateRequest request) {
-        PostDetailResponse response = postService.updatePost(loggedInUser.getUserId(), postId, request);
+        PostDetailResponse response = postService.updatePost(loggedInUserId, postId, request);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiSuccessResponse<Void>> deletePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId) {
-        postDeleteService.deletePost(loggedInUser.getUserId(), postId);
+        postDeleteService.deletePost(loggedInUserId, postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }
 
     @PatchMapping("/{postId}/like")
     public ResponseEntity<ApiSuccessResponse<PostLikeRespnose>> likePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId) {
-        PostLikeRespnose postLikeRespnose = postLikeCreateOrUpdateService.createOrUpdate(loggedInUser.getUserId(), postId);
+        PostLikeRespnose postLikeRespnose = postLikeCreateOrUpdateService.createOrUpdate(loggedInUserId, postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(postLikeRespnose));
     }
