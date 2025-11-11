@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ktb3.full.community.common.annotation.resolver.Authentication;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
@@ -14,7 +13,6 @@ import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.response.ApiErrorResponse;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
-import ktb3.full.community.dto.session.LoggedInUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,7 +25,7 @@ public interface AuthenticatedUserApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication LoggedInUser loggedInUser);
+    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication Long loggedInUserId);
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
     @ApiResponses(value = {
@@ -38,7 +36,7 @@ public interface AuthenticatedUserApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest);
 
     @Operation(summary = "회원 비밀번호 수정", description = "회원의 비밀번호를 수정합니다.")
@@ -50,7 +48,7 @@ public interface AuthenticatedUserApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<Void>> updatePassword(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Valid @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest);
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
@@ -59,7 +57,7 @@ public interface AuthenticatedUserApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Void>> logout(HttpSession session);
+    ResponseEntity<ApiSuccessResponse<Void>> logout();
 
     @Operation(summary = "회원 탈퇴", description = "회원을 삭제합니다.")
     @ApiResponses(value = {
@@ -67,5 +65,5 @@ public interface AuthenticatedUserApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication LoggedInUser loggedInUser, HttpSession session);
+    ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication Long loggedInUserId);
 }

@@ -13,7 +13,6 @@ import ktb3.full.community.common.annotation.resolver.Authentication;
 import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.*;
-import ktb3.full.community.dto.session.LoggedInUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public interface PostApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<PostDetailResponse>> getPostDetail(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
@@ -52,7 +51,7 @@ public interface PostApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
     })
     ResponseEntity<ApiSuccessResponse<PostDetailResponse>> createPost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Valid @RequestBody PostCreateRequest request);
 
     @Operation(summary = "게시글 수정", description = "ID를 이용해  게시글을 수정합니다.")
@@ -68,7 +67,7 @@ public interface PostApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<PostDetailResponse>> updatePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId,
             @Valid @RequestBody PostUpdateRequest request);
 
@@ -83,7 +82,7 @@ public interface PostApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<Void>> deletePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
     @Operation(summary = "좋아요", description = "좋아요를 누르거나 취소합니다.")
@@ -95,6 +94,6 @@ public interface PostApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<PostLikeRespnose>> likePost(
-            @Authentication LoggedInUser loggedInUser,
+            @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 }

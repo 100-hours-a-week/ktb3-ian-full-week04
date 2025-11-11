@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
@@ -60,7 +59,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "401", description = "인증 실패",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
     })
-    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session);
+    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest);
 
     @Operation(summary = "사용자 조회", description = "ID를 이용해 특정 사용자를 조회합니다.")
     @ApiResponses(value = {
