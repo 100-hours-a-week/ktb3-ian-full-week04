@@ -8,6 +8,7 @@ import ktb3.full.community.common.annotation.constraint.PasswordPattern;
 import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import static ktb3.full.community.common.Constants.*;
 
@@ -32,9 +33,9 @@ public class UserRegisterRequest {
     private final String nickname;
 
     @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
-    private final String profileImage;
+    private final MultipartFile profile;
 
-    public User toUserEntity() {
-        return User.create(email, password, nickname, profileImage);
+    public User toUserEntity(String profilePath) {
+        return User.create(email, password, nickname, profilePath);
     }
 }

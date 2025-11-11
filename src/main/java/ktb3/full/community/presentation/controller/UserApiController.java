@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 
 @Validated
@@ -42,7 +43,7 @@ public class UserApiController implements UserApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
+    public ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest) throws IOException {
         long userId = userService.register(userRegisterRequest);
         return ResponseEntity.created(URI.create(String.format("/users/%d", userId)))
                 .body(ApiSuccessResponse.getBaseResponse());
