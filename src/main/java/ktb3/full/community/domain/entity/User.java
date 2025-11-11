@@ -25,19 +25,19 @@ public class User extends AuditTime {
     @Column(name = "nickname", nullable = false, unique = true, columnDefinition = "CHAR(10)")
     private String nickname;
 
-    @Column(name = "profile_image_url", length = 255)
-    private String profileImageUrl;
+    @Column(name = "profile_image_path", nullable = false, unique = true, length = 255)
+    private String profilePath;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public static User create(String email, String password, String nickname, String profileImage) {
+    public static User create(String email, String password, String nickname, String profilePath) {
         return User.builder()
                 .id(null)
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .profileImageUrl(profileImage)
+                .profilePath(profilePath)
                 .isDeleted(false)
                 .build();
     }
@@ -50,8 +50,8 @@ public class User extends AuditTime {
         this.password = password;
     }
 
-    public void updateProfileImage(String profileImage) {
-        this.profileImageUrl = profileImage;
+    public void updateProfile(String profilePath) {
+        this.profilePath = profilePath;
     }
 
     public void delete() {

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import ktb3.full.community.common.annotation.constraint.NicknamePattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Schema(title = "회원 정보 수정 요청 DTO")
 @Getter
@@ -15,5 +16,5 @@ public class UserAccountUpdateRequest {
     private final String nickname;
 
     @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
-    private final String profileImage;
+    private final MultipartFile profile;
 }

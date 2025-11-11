@@ -14,12 +14,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageUploadService imageUploadService;
 
     public UserValidationResponse validateEmailAvailable(String email) {
         return new UserValidationResponse(!userRepository.existsByEmail(email));
@@ -30,10 +33,11 @@ public class UserService {
     }
 
     @Transactional
-    public long register(UserRegisterRequest request) {
+    public long register(UserRegisterRequest request) throws IOException {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
-        return userRepository.save(request.toUserEntity()).getId();
+        String profilePath = imageUploadService.saveImageAndGetPath(request.getProfile());
+        return userRepository.save(request.toUserEntity(profilePath)).getId();
     }
 
     public UserAccountResponse login(UserLoginRequest request) {
@@ -58,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
+    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) throws IOException {
         User user = getOrThrow(userId);
 
         if (request.getNickname() != null) {
@@ -66,8 +70,9 @@ public class UserService {
             user.updateNickname(request.getNickname());
         }
 
-        if (request.getProfileImage() != null) {
-            user.updateProfileImage(request.getProfileImage());
+        if (request.getProfile() != null) {
+            String profilePath = imageUploadService.saveImageAndGetPath(request.getProfile());
+            user.updateProfile(profilePath);
         }
 
         return UserAccountResponse.from(user);

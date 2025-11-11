@@ -14,7 +14,10 @@ import ktb3.full.community.dto.response.ApiErrorResponse;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.io.IOException;
 
 @Tag(name = "AuthenticatedUser", description = "인증된 회원 API")
 public interface AuthenticatedUserApi {
@@ -37,7 +40,7 @@ public interface AuthenticatedUserApi {
     })
     ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
             @Authentication Long loggedInUserId,
-            @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest);
+            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) throws IOException;
 
     @Operation(summary = "회원 비밀번호 수정", description = "회원의 비밀번호를 수정합니다.")
     @ApiResponses(value = {

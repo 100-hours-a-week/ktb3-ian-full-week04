@@ -15,9 +15,12 @@ import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
 
 @Tag(name = "User", description = "회원 API")
 public interface UserApi {
@@ -49,7 +52,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "409", description = "이메일, 닉네임 중복",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest);
+    ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest) throws IOException;
 
     @Operation(summary = "로그인", description = "회원의 이메일과 비밀번호를 인증합니다.")
     @ApiResponses(value = {
