@@ -29,8 +29,11 @@ public class Post extends AuditTime {
     @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column
-    private String image;
+    @Column(name = "origin_image_name", nullable = true, length = 255)
+    private String originImageName;
+
+    @Column(name = "image_path", nullable = true, unique = true, length = 255)
+    private String imagePath;
 
     @Column(name = "view_count", nullable = false)
     private int viewCount;
@@ -44,13 +47,14 @@ public class Post extends AuditTime {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public static Post create(User user, String title, String content, String image) {
+    public static Post create(User user, String title, String content, String imagePath, String imageName) {
         return Post.builder()
                 .id(null)
                 .user(user)
                 .title(title)
                 .content(content)
-                .image(image)
+                .imagePath(imagePath)
+                .originImageName(imageName)
                 .likeCount(0)
                 .commentCount(0)
                 .viewCount(0)
@@ -66,8 +70,8 @@ public class Post extends AuditTime {
         this.content = content;
     }
 
-    public void updateImage(String image) {
-        this.image = image;
+    public void updateImage(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public void increaseLikeCount() {

@@ -8,6 +8,7 @@ import ktb3.full.community.domain.entity.Post;
 import ktb3.full.community.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import static ktb3.full.community.common.Constants.MESSAGE_NOT_NULL_POST_CONTENT;
 import static ktb3.full.community.common.Constants.MESSAGE_NOT_NULL_POST_TITLE;
@@ -28,9 +29,9 @@ public class PostCreateRequest {
     private final String content;
 
     @Schema(description = "이미지", example = "https://test.kr/test.jpg")
-    private final String image;
+    private final MultipartFile image;
 
-    public Post toEntity(User user) {
-        return Post.create(user, title, content, image);
+    public Post toEntity(User user, String imagePath, String imageName) {
+        return Post.create(user, title, content, imagePath, imageName);
     }
 }

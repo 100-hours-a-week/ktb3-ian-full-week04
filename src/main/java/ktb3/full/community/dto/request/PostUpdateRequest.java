@@ -5,6 +5,7 @@ import ktb3.full.community.common.annotation.constraint.PostContentPattern;
 import ktb3.full.community.common.annotation.constraint.PostTitlePattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Schema(title = "게시글 수정 요청 DTO")
 @Getter
@@ -20,5 +21,5 @@ public class PostUpdateRequest {
     private final String content;
 
     @Schema(description = "이미지", example = "https://test.kr/test.jpg")
-    private final String image;
+    private final MultipartFile image;
 }
