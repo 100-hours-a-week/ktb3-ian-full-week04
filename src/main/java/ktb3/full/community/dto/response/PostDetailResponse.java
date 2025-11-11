@@ -26,7 +26,10 @@ public class PostDetailResponse {
     private final Long userId;
 
     @Schema(description = "작성자 닉네임", example = "testNick")
-    private final String author;
+    private final String authorNickname;
+
+    @Schema(description = "작성자 프로필", example = "https://test.kr/test.jpg")
+    private final String authorProfile;
 
     @Schema(description = "내용", example = "테스트 게시글입니다.")
     private final String content;
@@ -62,7 +65,8 @@ public class PostDetailResponse {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .userId(AccountValidator.getUserId(post.getUser()))
-                .author(AccountValidator.getAuthorName(post.getUser()))
+                .authorNickname(AccountValidator.getAuthorName(post.getUser()))
+                .authorProfile(AccountValidator.getAuthorProfile(post.getUser()))
                 .content(post.getContent())
                 .imagePath(post.getImagePath())
                 .imageName(post.getOriginImageName())

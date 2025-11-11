@@ -6,10 +6,18 @@ import ktb3.full.community.domain.entity.User;
 public class AccountValidator {
 
     public static Long getUserId(User user) {
-        return (user == null || user.isDeleted()) ? null : user.getId();
+        return isUserInactive(user) ? null : user.getId();
     }
 
     public static String getAuthorName(User user) {
-        return (user == null || user.isDeleted()) ? Constants.DELETED_AUTHOR : user.getNickname();
+        return isUserInactive(user) ? Constants.DELETED_AUTHOR : user.getNickname();
+    }
+
+    public static String getAuthorProfile(User user) {
+        return isUserInactive(user) ? null : user.getProfilePath();
+    }
+
+    private static boolean isUserInactive(User user) {
+        return user == null || user.isDeleted();
     }
 }
