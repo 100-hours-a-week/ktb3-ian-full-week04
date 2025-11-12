@@ -45,8 +45,9 @@ public class PostService {
     public PostDetailResponse createPost(long userId, PostCreateRequest request) throws IOException {
         MultipartFile image = request.getImage();
         String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
+        String imageName = image != null ? image.getOriginalFilename() : null;
         User user = userService.getOrThrow(userId);
-        Post post = request.toEntity(user, imagePath, image.getOriginalFilename());
+        Post post = request.toEntity(user, imagePath, imageName);
 
         postRepository.save(post);
 
@@ -68,7 +69,7 @@ public class PostService {
 
         if (request.getImage() != null) {
             String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
-            post.updateImage(imagePath);
+            post.updateImage(imagePath, request.getImage().getOriginalFilename());
         }
 
         boolean liked = postLikeService.isLiked(userId, postId);

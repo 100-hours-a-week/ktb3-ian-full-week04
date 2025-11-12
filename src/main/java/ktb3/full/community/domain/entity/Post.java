@@ -70,8 +70,9 @@ public class Post extends AuditTime {
         this.content = content;
     }
 
-    public void updateImage(String imagePath) {
+    public void updateImage(String imagePath, String imageName) {
         this.imagePath = imagePath;
+        this.originImageName = imageName;
     }
 
     public void increaseLikeCount() {
