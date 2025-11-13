@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ktb3.full.community.common.exception.LoginRequiredException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import static ktb3.full.community.common.Constants.SESSION_ATTRIBUTE_NAME_LOGGED_IN_USER;
 
+@Component
 public class LoginValidateInterceptor implements HandlerInterceptor {
 
     @Override
